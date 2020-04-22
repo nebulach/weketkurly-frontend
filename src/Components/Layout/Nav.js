@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./Nav.scss";
 import "../../Styles/reset.scss";
+import { API } from "../../global/env";
 
 class Nav extends Component {
   constructor(props) {
@@ -41,23 +42,14 @@ class Nav extends Component {
     };
   }
 
-  _movePath = menu => {
-    // console.log(e.target);
-    if (menu === "기본 채소") {
-      this.props.history.push("/categoryview");
-    }
-  };
-
   componentDidMount() {
-    this._getApi("categories");
-    window.addEventListener("scroll", this._onScroll);
+    this.getApi("categories");
+    window.addEventListener("scroll", this.onScroll);
   }
 
   componentDidUpdate(prevState) {
     if (prevState.isSameProps !== this.state.isSameProps) {
-      if (this.props.productName === "조각무 2조각") {
-        this._isSameCount();
-      }
+      this.props.productName === "조각무 2조각" && this.isSameCount();
     }
   }
 
@@ -65,8 +57,8 @@ class Nav extends Component {
     window.removeEventListener("scroll", this._headerScroll);
   }
 
-  _getApi = url => {
-    fetch(`https://api.kurly.com/v2/${url}`) //API 주소
+  getApi = url => {
+    fetch(`${API}/v2/${url}`) //API 주소
       .then(res => {
         return res.json();
       })
@@ -81,14 +73,21 @@ class Nav extends Component {
       );
   };
 
-  _inputChange = e => {
+  movePath = menu => {
+    // console.log(e.target);
+    if (menu === "기본 채소") {
+      this.props.history.push("/categoryview");
+    }
+  };
+
+  inputChange = e => {
     console.log(e.target.value);
     this.setState({
       inputSearchValue: e.target.value
     });
   };
 
-  _isSameCount = () => {
+  isSameCount = () => {
     if (this.props.productName !== this.state.isSameProps) {
       console.log("애니메이션 실행");
       this.setState({
@@ -101,17 +100,24 @@ class Nav extends Component {
     }
   };
 
-  _visible = (name, idx) => {
+  visible = (name, idx) => {
+    const {
+      visibleProfile1,
+      visibleProfile2,
+      visibleCategory0,
+      visibleCategory1
+    } = this.state;
+
     if (name === "prof") {
       switch (idx) {
         case 1:
           this.setState({
-            visibleProfile1: !this.state.visibleProfile1
+            visibleProfile1: !visibleProfile1
           });
           break;
         case 2:
           this.setState({
-            visibleProfile2: !this.state.visibleProfile2
+            visibleProfile2: !visibleProfile2
           });
           break;
         default:
@@ -121,25 +127,25 @@ class Nav extends Component {
       switch (idx) {
         case 0:
           this.setState({
-            visibleCategory0: !this.state.visibleCategory0
+            visibleCategory0: !visibleCategory0
           });
           break;
         case 1:
           this.setState({
-            visibleCategory1: !this.state.visibleCategory1
+            visibleCategory1: !visibleCategory1
           });
           break;
         default:
-          console.log("visible error");
+          break;
       }
     }
   };
 
-  _liProfileListdown = paramArr => {
+  liProfileListdown = paramArr => {
     const liProfileListdown = paramArr.map((param, idx) => {
       return param === "주문 내역" ? (
         <li key={idx}>
-          <p style={{ cursor: "pointer" }} onClick={this._goToOrderlist}>
+          <p style={{ cursor: "pointer" }} onClick={this.goToOrderlist}>
             {param}
           </p>
         </li>
@@ -152,7 +158,7 @@ class Nav extends Component {
     return liProfileListdown;
   };
 
-  _liCategoryListdown = paramArr => {
+  liCategoryListdown = paramArr => {
     let liCateListdown = [];
 
     liCateListdown =
@@ -162,12 +168,12 @@ class Nav extends Component {
           <li
             key={idx}
             onMouseEnter={() => {
-              this._visible("cate", 2);
-              this._liCategoryListdown2(param1[1]); // param1을 idx 인덱스의 [1]의 ["name"]을 맵 돌려서 보여주세요
+              this.visible("cate", 2);
+              this.liCategoryListdown2(param1[1]); // param1을 idx 인덱스의 [1]의 ["name"]을 맵 돌려서 보여주세요
             }}
             onMouseLeave={() => {
-              this._visible("cate", 2);
-              this._liCategoryListdown2(param1[1]);
+              this.visible("cate", 2);
+              this.liCategoryListdown2(param1[1]);
             }}
           >
             <div>
@@ -180,46 +186,31 @@ class Nav extends Component {
     return liCateListdown;
   };
 
-  _liCategoryListdown2 = arr => {
+  liCategoryListdown2 = arr => {
     this.setState({ dataDepth2: arr });
   };
 
-  _onScroll = () => {
+  onScroll = () => {
     const headScroll = window.scrollY;
     const sideScroll = window.scrollY;
 
-    if (headScroll > 116) {
-      this.setState({
-        headerFixed: true,
-        scrollY: headScroll
-      });
-    } else {
-      this.setState({
-        headerFixed: false,
-        scrollY: headScroll
-      });
-    }
+    this.setState({
+      scrollY: headScroll,
+      headerFixed: headScroll > 116 ? true : false
+    });
 
-    if (sideScroll > 470) {
-      this.setState({
-        sideFixed: true
-      });
-    } else {
-      this.setState({
-        sideFixed: false
-      });
-    }
+    this.setState({ sideFixed: sideScroll > 470 ? true : false });
   };
 
-  _goToCart = () => {
+  goToCart = () => {
     this.props.history.push("/itemcart");
   };
 
-  _goToMain = () => {
+  goToMain = () => {
     this.props.history.push("/");
   };
 
-  _goToOrderlist = () => {
+  goToOrderlist = () => {
     this.props.history.push("/orderlist");
   };
 
@@ -248,7 +239,7 @@ class Nav extends Component {
             onClick={() => {
               this.setState(
                 { itemCartCount: itemCartCount + 1 },
-                this._isSameCount
+                this.isSameCount
               );
             }}
           >
@@ -264,8 +255,8 @@ class Nav extends Component {
             <ul>
               <li
                 className="profile-listdown"
-                onMouseEnter={() => this._visible("prof", 1)}
-                onMouseLeave={() => this._visible("prof", 1)}
+                onMouseEnter={() => this.visible("prof", 1)}
+                onMouseLeave={() => this.visible("prof", 1)}
               >
                 <span id="prof-grade">일반</span>
                 <span style={{ color: "#5f0080" }}>이은지님</span>
@@ -275,13 +266,13 @@ class Nav extends Component {
                     display: visibleProfile1 ? "block" : "none"
                   }}
                 >
-                  {this._liProfileListdown(dataProfileList1)}
+                  {this.liProfileListdown(dataProfileList1)}
                 </ul>
               </li>
               <li
                 className="profile-listdown"
-                onMouseEnter={() => this._visible("prof", 2)}
-                onMouseLeave={() => this._visible("prof", 2)}
+                onMouseEnter={() => this.visible("prof", 2)}
+                onMouseLeave={() => this.visible("prof", 2)}
               >
                 <span>고객센터</span>
                 <ul
@@ -290,7 +281,7 @@ class Nav extends Component {
                     display: visibleProfile2 ? "block" : "none"
                   }}
                 >
-                  {this._liProfileListdown(dataProfileList2)}
+                  {this.liProfileListdown(dataProfileList2)}
                 </ul>
               </li>
               <li>
@@ -299,7 +290,7 @@ class Nav extends Component {
             </ul>
           </div>
         </div>
-        <div onClick={this._goToMain} className="nav-logo">
+        <div onClick={this.goToMain} className="nav-logo">
           {/* 로고 */}
           <img
             alt="로고"
@@ -311,8 +302,8 @@ class Nav extends Component {
           <ul className="nav-bottom-bar">
             <li
               className="category-listdown"
-              onMouseEnter={() => this._visible("cate", 0)}
-              onMouseLeave={() => this._visible("cate", 0)}
+              onMouseEnter={() => this.visible("cate", 0)}
+              onMouseLeave={() => this.visible("cate", 0)}
             >
               <img
                 alt="카테고리"
@@ -322,8 +313,8 @@ class Nav extends Component {
 
               <div
                 className="category-listdown-depth0"
-                onMouseEnter={() => this._visible("cate", 1)}
-                onMouseLeave={() => this._visible("cate", 1)}
+                onMouseEnter={() => this.visible("cate", 1)}
+                onMouseLeave={() => this.visible("cate", 1)}
                 style={{
                   display: visibleCategory0 ? "block" : "none",
                   width: visibleCategory1 ? "438px" : null
@@ -332,7 +323,7 @@ class Nav extends Component {
                 <div style={{ width: visibleCategory1 ? "438px" : null }}>
                   <ul className="category-listdown-depth1">
                     {data.categories
-                      ? this._liCategoryListdown(
+                      ? this.liCategoryListdown(
                           data.categories.map((param, _) => {
                             return [param["name"], param["categories"]];
                           })
@@ -346,7 +337,7 @@ class Nav extends Component {
                     {dataDepth2.map((param, idx) => (
                       <li
                         onClick={() => {
-                          this._movePath("기본 채소");
+                          this.movePath("기본 채소");
                         }}
                         key={idx}
                       >
@@ -371,7 +362,7 @@ class Nav extends Component {
             </li>
             <div className="search-wrap">
               <input
-                onChange={this._inputChange}
+                onChange={this.inputChange}
                 type="text"
                 value={inputSearchValue}
                 required="required"
@@ -382,7 +373,7 @@ class Nav extends Component {
                 src="https://res.kurly.com/pc/service/common/1908/ico_search_x2.png"
               />
             </div>
-            <div onClick={this._goToCart} className="itemcart">
+            <div onClick={this.goToCart} className="itemcart">
               <img
                 alt="장바구니"
                 src="https://res.kurly.com/pc/ico/1908/ico_cart_x2_v2.png"

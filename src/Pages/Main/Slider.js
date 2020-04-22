@@ -6,6 +6,7 @@ import "slick-carousel/slick/slick-theme.css";
 
 const settings = {
   infinite: true,
+  dots: false,
   speed: 700,
   slidesToShow: 1,
   slidesToScroll: 1,
@@ -32,11 +33,13 @@ class ImgSlider extends Component {
   }
 
   render() {
-    const imgSliderList = this.props.src
-      ? this.props.src.map((param, idx) => {
-          return <img src={param["image_url"]} alt="" key={idx} />;
-        })
-      : null;
+    const { src } = this.props;
+
+    const imgSliderList =
+      src &&
+      src.map((param, idx) => {
+        return <img src={param["image_url"]} alt="" key={idx} />;
+      });
 
     return (
       <div className="main-slide">

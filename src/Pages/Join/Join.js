@@ -995,4 +995,5 @@ class Join extends Component {
     );
   }
 }
+
 export default withRouter(Join);

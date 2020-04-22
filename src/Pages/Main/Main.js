@@ -4,6 +4,7 @@ import Footer from "../../Components/Layout/Footer";
 import MainCategory from "./MainCategory";
 import ImgSlider from "./Slider";
 import "./Main.scss";
+import { API, API_JONG } from "../../global/env";
 
 class Main extends Component {
   constructor(props) {
@@ -17,93 +18,78 @@ class Main extends Component {
   }
 
   componentDidMount = () => {
-    this._getApi("recommendation");
-    window.addEventListener("scroll", this._onScroll);
+    this.getApi("recommendation");
+    window.addEventListener("scroll", this.onScroll);
   };
 
   componentWillUnmount() {
-    window.removeEventListener("scroll", this._headerScroll);
+    window.removeEventListener("scroll", this.onScroll);
   }
 
-  _getApi = url => {
-    fetch(`https://api.kurly.com/v2/home/${url}`) //API 주소
-      .then(res => {
-        return res.json();
-      })
-      .then(res =>
-        this.setState({
-          data: res.data["section_list"].filter(item => item !== undefined)
-        })
-      );
+  getApi = async url => {
+    // const data = await fetch(`${API}/v2/home/${url}`); //API 주소
+    const data = await fetch(`${API_JONG}/home`); //API 주소
+    const dataJSON = await data.json();
+    this.setState({
+      data: dataJSON.data["section_list"].filter(item => item !== undefined)
+    });
   };
 
-  _onScroll = () => {
+  onScroll = () => {
     const sideScroll = window.scrollY;
     const goTopCheck = window.scrollY;
 
-    if (sideScroll > 470) {
-      this.setState({
-        sideFixed: true,
-        scrollY: sideScroll
-      });
-    } else {
-      this.setState({
-        sideFixed: false,
-        scrollY: sideScroll
-      });
-    }
+    this.setState({
+      scrollY: sideScroll,
+      sideFixed: sideScroll > 470 ? true : false
+    });
 
-    if (goTopCheck > 1700) {
-      this.setState({ goTop: true });
-    } else {
-      this.setState({ goTop: false });
-    }
+    this.setState({ goTop: goTopCheck > 1700 ? true : false });
   };
 
-  _goTopClick = () => {
+  goTopClick = () => {
     this.setState({ scrollY: 0 });
     window.scrollTo(0, 0);
   };
 
-  _mainCateList = () => {
+  mainCateList = () => {
+    const { data } = this.state;
+
     const mainCateList =
-      this.state.data.length === 0
-        ? null
-        : this.state.data.map((param, idx) => {
-            return (
-              <MainCategory
-                key={idx}
-                section_id={param["section_id"]}
-                section_type={param["section_type"]}
-                title={param["title"]}
-                events={param["events"]}
-                products={param["products"]}
-                categories={param["categories"]}
-                recipes={param["recipes"]}
-                reviews={param["reviews"]}
-                background={param["background"]}
-                text={param["text"]}
-              />
-            ); // 배열
-          });
+      data.length !== 0 &&
+      data.map((param, idx) => {
+        return (
+          <MainCategory
+            key={idx}
+            section_id={param["section_id"]}
+            section_type={param["section_type"]}
+            title={param["title"]}
+            events={param["events"]}
+            products={param["products"]}
+            categories={param["categories"]}
+            recipes={param["recipes"]}
+            reviews={param["reviews"]}
+            background={param["background"]}
+            text={param["text"]}
+          />
+        ); // 배열
+      });
 
     return mainCateList;
   };
 
   render() {
+    const { data, sideFixed, scrollY, goTop } = this.state;
+
     return (
       <div>
         <Nav />
-        <ImgSlider
-          src={this.state.data[0] ? this.state.data[0]["banners"] : null}
-        />
+        <ImgSlider src={data[0] && data[0]["banners"]} />
         <div className="main">
           <div
-            className={this.state.sideFixed ? "quick-menu float" : "quick-menu"}
+            className={sideFixed ? "quick-menu float" : "quick-menu"}
             style={{
-              top: this.state.sideFixed
-                ? `${this.state.scrollY + 150}px`
-                : "600px"
+              top: sideFixed ? `${scrollY + 150}px` : "600px"
             }}
           >
             <img
@@ -119,15 +105,15 @@ class Main extends Component {
             </div>
             <div className="side-recent"></div>
           </div>
-          {this._mainCateList()}
+          {this.mainCateList()}
           <img
             className="img-bottom"
             src="https://img-cf.kurly.com/shop/data/main/15/pc_img_1568875999.png"
             alt=""
           />
           <div
-            style={{ bottom: !this.state.goTop && "-100px" }}
-            onClick={this._goTopClick}
+            style={{ bottom: !goTop && "-100px" }}
+            onClick={this.goTopClick}
             className="go-top"
           />
         </div>

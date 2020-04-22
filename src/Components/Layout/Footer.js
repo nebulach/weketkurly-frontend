@@ -1,7 +1,34 @@
 import React, { Component } from "react";
 import "./Footer.scss";
 
+const bottomSNS = [
+  {
+    src: "https://res.kurly.com/pc/ico/1810/ico_instagram.png",
+    alt: "instagram"
+  },
+  { src: "https://res.kurly.com/pc/ico/1810/ico_fb.png", alt: "facebook" },
+  { src: "https://res.kurly.com/pc/ico/1810/ico_blog.png", alt: "naver blog" },
+  {
+    src: "https://res.kurly.com/pc/ico/1810/ico_naverpost.png",
+    alt: "naver post"
+  },
+  { src: "https://res.kurly.com/pc/ico/1810/ico_youtube.png", alt: "youtube" }
+];
+
+const bottomSNSArr = bottomSNS.map((param, idx) => {
+  return (
+    <li key={idx}>
+      <img src={param.src} alt={param.alt} />
+    </li>
+  );
+});
+
 class Footer extends Component {
+  constructor() {
+    super();
+    this.state = { bottomSNSArr };
+  }
+
   render() {
     return (
       <div className="footer">
@@ -126,38 +153,7 @@ class Footer extends Component {
               </div>
             </div>
           </div>
-          <ul className="foot-bottom-sns">
-            <li>
-              <img
-                src="https://res.kurly.com/pc/ico/1810/ico_instagram.png"
-                alt="instagram"
-              />
-            </li>
-            <li>
-              <img
-                src="https://res.kurly.com/pc/ico/1810/ico_fb.png"
-                alt="facebook"
-              />
-            </li>
-            <li>
-              <img
-                src="https://res.kurly.com/pc/ico/1810/ico_blog.png"
-                alt="naver blog"
-              />
-            </li>
-            <li>
-              <img
-                src="https://res.kurly.com/pc/ico/1810/ico_naverpost.png"
-                alt="naver post"
-              />
-            </li>
-            <li>
-              <img
-                src="https://res.kurly.com/pc/ico/1810/ico_youtube.png"
-                alt="youtube"
-              />
-            </li>
-          </ul>
+          <ul className="foot-bottom-sns">{this.state.bottomSNSArr}</ul>
         </div>
       </div>
     );

@@ -1,248 +1,179 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./ItemCart.scss";
+import ItemListRow from "./ItemListRow";
+import ItemTableHeader from "./ItemTableHeader";
+import ItemTableFooter from "./ItemTableFooter";
+import ItemTotalPrice from "./ItemTotalPrice";
 
 class ItemCartChild extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataProps: this.props.data,
-      priceItemAll: 0,
       itemCount: 0,
+      dataProps: {},
+      priceItemAll: 0,
       checkedCount: 0,
       chkChecked: true,
-      itemList: [
-        ...this.props.data.products.map(param => {
-          return {
-            name: param["name"],
-            price: param["price"],
-            original_price: param["original_price"],
-            ea: param["ea"],
-            max_ea: param["max_ea"],
-            min_ea: param["min_ea"],
-            thumbnail_image_url: param["thumbnail_image_url"],
-            checked: true
-          };
-        })
-      ]
+      itemList: []
     };
   }
 
-  _itemCount = e => {
-    const editTargetIdx = e.target.id.split(".")[0]; // number
-    const editTarget = this.state.itemList[editTargetIdx]; // object
+  componentDidMount() {
+    this.getAPIData();
+  }
 
-    const tempArr = [...this.state.itemList];
-    const tempObj = { ...editTarget };
+  getAPIData = async () => {
+    const cart = await fetch("http://localhost:3000/data/cart.json");
+    const cartJSON = await cart.json();
 
-    if (e.target.textContent === "+" && tempObj.ea < tempObj.max_ea) {
-      tempObj.ea = tempObj.ea + 1;
-      tempArr[editTargetIdx] = tempObj;
-
-      this.setState({ itemList: tempArr });
-    } else if (e.target.textContent === "-" && tempObj.ea > tempObj.min_ea) {
-      tempObj.ea = tempObj.ea - 1;
-      tempArr[editTargetIdx] = tempObj;
-
-      this.setState({ itemList: tempArr });
-    }
+    this.setState(
+      {
+        dataProps: cartJSON.data,
+        itemCount: cartJSON.data.products.length,
+        checkedCount: cartJSON.data.products.length
+      },
+      () => {
+        this.setState({
+          itemList: [
+            ...this.state.dataProps.products.map(param => {
+              return {
+                name: param["name"],
+                price: param["price"],
+                original_price: param["original_price"],
+                ea: param["ea"],
+                max_ea: param["max_ea"],
+                min_ea: param["min_ea"],
+                thumbnail_image_url: param["thumbnail_image_url"],
+                checked: true
+              };
+            })
+          ]
+        });
+      }
+    );
   };
 
-  _itemCheck = e => {
-    const editTargetIdx = parseInt(e.target.id); // number
-    const editTarget = this.state.itemList[editTargetIdx]; // object
+  itemCount = e => {
+    const { itemList } = this.state;
 
-    const tempArr = [...this.state.itemList]; // itemList 복사
-    const tempObj = { ...editTarget }; // 접근할 객체 복사
+    const targetIdx = e.target.id.split(".")[0]; // number
+    const target = itemList[targetIdx]; // object
+
+    const tempArr = [...itemList];
+    const tempObj = { ...target };
+
+    if (e.target.textContent === "+" && tempObj.ea < tempObj.max_ea) {
+      tempObj.ea += 1;
+    } else if (tempObj.ea !== 1) {
+      tempObj.ea -= 1;
+    }
+    tempArr[targetIdx] = tempObj;
+    this.setState({ itemList: tempArr });
+  };
+
+  itemCheck = e => {
+    const { itemList, itemCount, checkedCount, chkChecked } = this.state;
+    const targetIdx = parseInt(e.target.id); // number
+    const target = itemList[targetIdx]; // object
+
+    const tempArr = [...itemList]; // itemList 복사
+    const tempObj = { ...target }; // 접근할 객체 복사
 
     let tempChkAll = [];
     let tempAllBoolean = 1;
-    let tempCheckedCount = this.state.checkedCount;
+    let tempCheckedCount = checkedCount;
 
     // 개별 체크 상태 뒤집어줌
-    if (tempObj.checked) {
-      tempCheckedCount = tempCheckedCount - 1;
-    } else {
-      tempCheckedCount = tempCheckedCount + 1;
-    }
+    tempObj.checked ? (tempCheckedCount -= 1) : (tempCheckedCount += 1);
     tempObj.checked = !tempObj.checked;
-    tempArr[editTargetIdx] = tempObj;
+    tempArr[targetIdx] = tempObj;
 
-    // 전부 체크 여부 레디 1
-    const isChkAll = tempArr.map(param => {
-      return tempChkAll.push(param.checked);
-    });
-
-    console.log(isChkAll);
-
-    // 전부 체크 여부 레디 2
-    for (let i of tempChkAll) {
-      tempAllBoolean = Boolean(tempAllBoolean * i);
+    for (let i = 0; i < tempArr.length; i++) {
+      tempChkAll.push(tempArr[i].checked);
+      tempAllBoolean = Boolean(tempAllBoolean * tempChkAll[i]);
     }
 
     // 전부 체크 상태에서 -1 눌렸으면
-    if (editTargetIdx === -1) {
+    if (targetIdx === -1) {
       // 전체선택 체크박스인가?
-      if (this.state.chkChecked) {
-        for (let i = 0; i < tempArr.length; i++) {
-          tempArr[i].checked = false;
-        }
-        this.setState({
-          itemList: tempArr,
-          chkChecked: !this.state.chkChecked,
-          checkedCount: 0
-        });
-      } else {
-        for (let i = 0; i < tempArr.length; i++) {
-          tempArr[i].checked = true;
-        }
-        this.setState({
-          itemList: tempArr,
-          chkChecked: !this.state.chkChecked,
-          checkedCount: this.state.itemCount
-        });
+      for (let i = 0; i < tempArr.length; i++) {
+        tempArr[i].checked = chkChecked ? false : true;
       }
-    } else if (editTargetIdx !== -1) {
-      if (!tempAllBoolean) {
-        this.setState({
-          itemList: tempArr,
-          chkChecked: false,
-          checkedCount: tempCheckedCount
-        });
-      } else {
-        this.setState({
-          itemList: tempArr,
-          chkChecked: true,
-          checkedCount: tempCheckedCount
-        });
-      }
+      this.setState({
+        itemList: tempArr,
+        chkChecked: !chkChecked,
+        checkedCount: chkChecked ? 0 : itemCount
+      });
+    } else {
+      this.setState({
+        itemList: tempArr,
+        checkedCount: tempCheckedCount,
+        chkChecked: tempAllBoolean ? true : false
+      });
     }
   };
 
-  _priceCalc = () => {
+  deleteItem = row => {
+    const { itemCount, checkedCount, chkChecked } = this.state;
+    const targetIdx = row;
+    console.log(row);
+
+    const tempArr = [...this.state.itemList]; // itemList 복사
+    const tempArrFilter = tempArr.filter((_, idx) => idx !== targetIdx);
+
+    this.setState({
+      chkChecked: itemCount === 1 ? false : chkChecked,
+      itemList: tempArrFilter,
+      itemCount: itemCount - 1,
+      checkedCount: checkedCount - 1
+    });
+  };
+
+  itemProductArr = () => {
+    const { itemList } = this.state;
+    console.log(typeof itemList);
+
+    return (
+      <ItemListRow
+        itemList={!!itemList && itemList}
+        itemCheck={this.itemCheck}
+        itemCount={this.itemCount}
+        deleteItem={this.deleteItem}
+      />
+    );
+  };
+
+  priceCalc = () => {
     const tempArr = [...this.state.itemList]; // itemList 복사
 
-    let priceResult1 = 0;
-    let priceResult2 = 0;
-    let priceResult3 = 0;
-    let priceResult4 = 0;
-    let resultArr = [];
+    let priceRst1 = 0,
+      priceRst2 = 0,
+      priceRst3 = 0,
+      priceRst4 = 0,
+      resultArr = [];
 
     for (let i of tempArr) {
-      if (i.checked === true) {
-        priceResult1 += i.ea * i.price;
-        priceResult2 += i.ea * i.original_price;
-        priceResult3 += i.ea * i.price;
-        priceResult4 += i.ea * i.price;
+      if (i.checked) {
+        priceRst1 += i.ea * i.price;
+        priceRst2 += i.ea * i.original_price;
+        priceRst3 += i.ea * i.price;
+        priceRst4 += i.ea * i.price;
       }
     }
 
-    priceResult2 = priceResult2 - priceResult1;
-    priceResult3 = 0;
-    priceResult4 = priceResult1 - priceResult2 + 3000;
+    priceRst2 = priceRst2 - priceRst1;
+    priceRst3 = 0;
+    priceRst4 = priceRst1 - priceRst2 + 3000;
 
-    for (let i of [priceResult1, priceResult2, priceResult3, priceResult4]) {
+    for (let i of [priceRst1, priceRst2, priceRst3, priceRst4]) {
       resultArr.push(i.toLocaleString());
     }
 
     return resultArr;
   };
 
-  _deleteItem = row => {
-    // const editTargetIdx = parseInt(e.target.id); // number
-    // console.log(e.target.id);
-
-    const editTargetIdx = row;
-    console.log(row);
-
-    const tempArr = [...this.state.itemList]; // itemList 복사
-    const tempArrFilter = tempArr.filter((_, idx) => idx !== editTargetIdx);
-
-    if (this.state.itemCount === 1) {
-      this.setState({ chkChecked: false });
-    }
-
-    this.setState({
-      itemList: tempArrFilter,
-      itemCount: this.state.itemCount - 1,
-      checkedCount: this.state.checkedCount - 1
-    });
-  };
-
-  _itemProductArr = () => {
-    const itemProductArr = this.state.itemList.map((param, idx) => {
-      return (
-        <tr
-          key={idx}
-          className="item-table-row"
-          style={{ borderBottom: "2px solid #ddd" }}
-        >
-          <td align="left" style={{ display: "flex", alignItems: "center" }}>
-            <input
-              id={idx + "chk"}
-              onClick={this._itemCheck}
-              checked={this.state.itemList[idx].checked ? true : false}
-              type="checkbox"
-            />
-            <label htmlFor={idx + "chk"} />
-            <img src={param["thumbnail_image_url"]} alt="" />
-          </td>
-          <td align="left">
-            <p className="item-table-row-title">{param["name"]}</p>
-            <p className="item-table-row-price">
-              {param["price"].toLocaleString()}원
-            </p>
-          </td>
-          <td className="item-table-row-count">
-            <div>
-              <button
-                id={`${idx}.${param["price"]}.${param["ea"]}`}
-                onClick={this._itemCount}
-                style={{ borderRight: "1px solid #ddd" }}
-              >
-                -
-              </button>
-              <span>
-                {this.state.itemList && String(this.state.itemList[idx]["ea"])}
-              </span>
-              <button
-                id={`${idx}.${param["price"]}.${param["ea"]}`}
-                onClick={this._itemCount}
-                style={{ borderLeft: "1px solid #ddd" }}
-              >
-                +
-              </button>
-            </div>
-          </td>
-          <td>
-            {(
-              this.state.itemList[idx]["ea"] * this.state.itemList[idx]["price"]
-            ).toLocaleString()}
-          </td>
-          <td
-            onClick={() => this._deleteItem(idx)}
-            // id={`${idx}.${param["price"]}.${param["ea"]}`}
-          >
-            <img
-              className="del-btn"
-              src="https://res.kurly.com/pc/ico/1801/btn_close_24x24_514859.png"
-              alt="삭제"
-            />
-          </td>
-        </tr>
-      );
-    });
-    return itemProductArr;
-  };
-
-  componentDidMount() {
-    this.setState({
-      itemCount: this.state.dataProps.products.length,
-      checkedCount: this.state.dataProps.products.length
-    });
-  }
-
-  _goToOrder = () => {
+  goToOrder = () => {
     this.props.history.push("/order");
   };
 
@@ -261,36 +192,14 @@ class ItemCartChild extends Component {
         <div className="item-content">
           <table className="item-table">
             <tbody>
-              <tr className="item-table-header">
-                <td
-                  style={{
-                    width: "375px"
-                  }}
-                >
-                  <input
-                    id="-1chk"
-                    onClick={this._itemCheck}
-                    checked={chkChecked}
-                    type="checkbox"
-                  />
-                  <label htmlFor="-1chk" />
-                  <span>
-                    전체선택(
-                    {`${itemCount}/${itemCount}`})
-                  </span>
-                </td>
-                <td style={{ width: "432px" }}>
-                  <span>상품 정보</span>
-                </td>
-                <td style={{ width: "115px" }}>
-                  <span>수량</span>
-                </td>
-                <td style={{ width: "115px" }}>
-                  <span>상품금액</span>
-                </td>
-              </tr>
+              <ItemTableHeader
+                itemCheck={this.itemCheck}
+                itemCount={itemCount}
+                chkChecked={chkChecked}
+                checkedCount={checkedCount}
+              />
               {itemCount !== 0 ? (
-                this._itemProductArr()
+                this.itemProductArr()
               ) : (
                 <tr>
                   <td className="no-item" colSpan="4">
@@ -298,54 +207,17 @@ class ItemCartChild extends Component {
                   </td>
                 </tr>
               )}
-              <tr>
-                <td align="left" colSpan="4">
-                  <div className="item-wrapper-btn">
-                    <input
-                      id="-1chk"
-                      onClick={this._itemCheck}
-                      checked={chkChecked}
-                      type="checkbox"
-                    />
-                    <label htmlFor="-1chk" />
-                    <span style={{ paddingRight: "15px" }}>
-                      전체선택(
-                      {`${checkedCount}/${itemCount}`})
-                    </span>
-                    <button>선택 삭제</button>
-                    <button style={{ width: "120px" }}>품절 상품 삭제</button>
-                  </div>
-                </td>
-              </tr>
+              <ItemTableFooter
+                itemCheck={this.itemCheck}
+                itemCount={itemCount}
+                chkChecked={chkChecked}
+                checkedCount={checkedCount}
+              />
             </tbody>
           </table>
-          <div className="item-price">
-            <div>
-              <span className="item-price-desc">상품금액</span>
-              <span className="item-price-price">{this._priceCalc()[0]}원</span>
-            </div>
-            <span className="item-price-oper">-</span>
-            <div>
-              <span className="item-price-desc">상품할인금액</span>
-              <span className="item-price-price">
-                {-this._priceCalc()[1]}원
-              </span>
-            </div>
-            <span className="item-price-oper">+</span>
-            <div>
-              <span className="item-price-desc">배송비</span>
-              <span className="item-price-price">
-                3,000원<p>{this._priceCalc()[2]}원 추가주문 시, 무료배송</p>
-              </span>
-            </div>
-            <span className="item-price-oper">=</span>
-            <div style={{ backgroundColor: "#f7f7f7" }}>
-              <span className="item-price-desc">결제예정금액</span>
-              <span className="item-price-price">{this._priceCalc()[3]}원</span>
-            </div>
-          </div>
+          <ItemTotalPrice priceCalc={this.priceCalc} />
           <button
-            onClick={this._goToOrder}
+            onClick={this.goToOrder}
             className={checkedCount ? "order-btn btn-on" : "order-btn btn-off"}
           >
             주문하기
