@@ -132,7 +132,6 @@ class ItemCartChild extends Component {
 
   itemProductArr = () => {
     const { itemList } = this.state;
-    console.log(typeof itemList);
 
     return (
       <ItemListRow

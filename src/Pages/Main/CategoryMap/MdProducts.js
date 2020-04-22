@@ -18,7 +18,6 @@ const MdProducts = ({
   const categoryList =
     categories &&
     categories.map((param, idx) => {
-      console.log(param);
       return (
         <button
           key={"mdcate" + idx}
