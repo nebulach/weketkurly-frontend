@@ -16,8 +16,8 @@ class CategoryViewItem extends Component {
   };
   //가격에 3자리수 콤마 넣는 함수
   //함수들어갈자리
-  goDetail = () => {
-    this.props.history.push("/detail");
+  goDetail = no => {
+    this.props.history.push(`/detail/${no}`);
   };
   render() {
     // console.log("자식으로 넘어감", this.props.bridge2, this.props.bridge3);
@@ -25,13 +25,9 @@ class CategoryViewItem extends Component {
       this.props.bridge3 !== undefined &&
       this.props.bridge3.map(x => {
         return (
-          <div className="product-box" onClick={this.goDetail}>
+          <div className="product-box" onClick={() => this.goDetail(x.id)}>
             <div className="img-box">
-              <img
-                className="cate-image"
-                src={x.thumbnail_image_url}
-                alt=""
-              ></img>
+              <img className="cate-image" src={x.list_image_url} alt=""></img>
             </div>
             <div className="pr-name">{x.name}</div>
             <div className="pr-price">{this.numberWithCommas(x.price)}원</div>

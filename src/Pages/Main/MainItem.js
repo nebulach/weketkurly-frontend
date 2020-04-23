@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
 class MainItem extends Component {
   constructor(props) {
@@ -13,12 +14,17 @@ class MainItem extends Component {
       price,
       original_price,
       thumbnail_image_url,
-      cN
+      cN,
+      no
     } = this.props;
 
     return (
       <>
-        <li style={{ transform: `translateX(${style}px)` }} className={cN}>
+        <li
+          onClick={() => this.props.history.push(`/detail/${no}`)}
+          style={{ transform: `translateX(${style}px)` }}
+          className={cN}
+        >
           <div
             style={{
               position: "relative",
@@ -64,4 +70,4 @@ class MainItem extends Component {
   }
 }
 
-export default MainItem;
+export default withRouter(MainItem);

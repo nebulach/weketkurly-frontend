@@ -15,13 +15,14 @@ import PopUp from "../../Components/CartPop/CartPop";
 import Bar from "../../Components/Detail/Detail/Bar";
 import Footer from "../../Components/Layout/Footer";
 import "./Detail.scss";
+import { API_JONG } from "../../global/env";
 
 export default class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       number: 1,
-      price: 1350,
+      price: 1000,
       point: 7,
       save: false,
       popUp: false,
@@ -49,6 +50,7 @@ export default class Detail extends Component {
   }
 
   componentDidMount = () => {
+    console.log(this.props.location.pathname.split("/")[2]);
     window.addEventListener("scroll", this.onScroll);
 
     fetch("http://localhost:3000/data/data.json")
@@ -59,12 +61,18 @@ export default class Detail extends Component {
         });
       });
 
-    fetch("https://api.kurly.com/v3/home/products/49635?&ver=1583460405278")
+    fetch(`${API_JONG}/products/${this.props.location.pathname.split("/")[2]}`)
       .then(res => res.json())
       .then(res => {
-        this.setState({
-          info: res.data
-        });
+        console.log(res.data);
+        this.setState(
+          {
+            info: res.data
+          },
+          () => {
+            this.setState({ price: this.state.info.discounted_price });
+          }
+        );
       });
   };
 
@@ -85,9 +93,10 @@ export default class Detail extends Component {
   };
 
   handleOnClickPlus = () => {
+    console.log(this.state.price);
     this.setState({
       number: this.state.number + 1,
-      price: this.state.price + 1350,
+      price: this.state.price + this.state.info.discounted_price,
       point: this.state.point + 7
     });
   };
@@ -102,7 +111,7 @@ export default class Detail extends Component {
     } else {
       this.setState({
         number: this.state.number - 1,
-        price: this.state.price - 1350,
+        price: this.state.price - this.state.info.discounted_price,
         point: this.state.point - 7
       });
     }
@@ -219,7 +228,7 @@ export default class Detail extends Component {
     } = this.state;
 
     // 상품 이미지
-    const mainImg = info.original_image_url;
+    const mainImg = info.detail_image_url;
 
     // 슬라이드 기능 구현
     const x = translate;
@@ -244,8 +253,8 @@ export default class Detail extends Component {
           <ProductInfo
             name={info.name}
             short_description={info.short_description}
-            origin={info.origin}
-            price={price.toLocaleString()}
+            origin={info.length !== 0 && info.original_price.toLocaleString()}
+            price={info.length !== 0 && info.discounted_price.toLocaleString()}
             point={point}
             unit_text={info.unit_text}
             weight={info.weight}
@@ -260,7 +269,10 @@ export default class Detail extends Component {
 
         {/* 가격정보 */}
         <div className="total-price-cart">
-          <TotalPrice price={price.toLocaleString()} point={point} />
+          <TotalPrice
+            price={info.length !== 0 && this.state.price}
+            point={point}
+          />
           <CartBtn
             handleOnClickSave={this.handleOnClickSave}
             togglePopUp={this.togglePopUp}
@@ -451,7 +463,6 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-
         <Qa />
         <Bar
           scroll={scroll}
