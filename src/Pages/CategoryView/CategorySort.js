@@ -11,6 +11,7 @@ class CategorySort extends Component {
     };
   }
   componentDidMount() {
+    console.log(this.state.cateNum2);
     // fetch(`https://api.kurly.com/v1/category/${this.state.cateNum2}`)
     //   //미니네브 데이터 받아오는 url
     //   .then(res => {
@@ -57,7 +58,7 @@ class CategorySort extends Component {
             className="sort-box-menu"
             name={x.no}
             // onClick={() => this.props.bridge1(x.no)}
-            onClick={() => this.getSubData()}
+            // onClick={this.props.getSubData}
           >
             {x.name}
           </span>

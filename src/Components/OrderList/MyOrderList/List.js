@@ -3,7 +3,14 @@ import "./List.scss";
 
 export default class List extends Component {
   render() {
-    const { no, product_name, status, thumb, review_button_flag } = this.props;
+    const {
+      no,
+      product_name,
+      status,
+      thumb,
+      price,
+      review_button_flag
+    } = this.props;
 
     return (
       <li className="product">
@@ -20,7 +27,7 @@ export default class List extends Component {
                 </dl>
                 <dl>
                   <dt>걸제금액</dt>
-                  <dd>31,880원</dd>
+                  <dd>{price.toLocaleString()}원</dd>
                 </dl>
                 <dl>
                   <dt>주문선택</dt>

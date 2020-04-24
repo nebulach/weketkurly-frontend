@@ -11,16 +11,19 @@ import CategoryTitle from "./CategoryTitle";
 import "./CategoryView.scss";
 import CategoryPage from "./CategoryPage";
 import { API_JONG } from "../../global/env";
+import PageBtn from "../../Components/Detail/ReviewQA/PageBtn";
 class categoryView extends React.Component {
   constructor() {
     super();
     this.state = {
+      paging: {},
       data: [],
       data2: [],
       cateNum2: "",
       cateNum1: "907",
       nowPath: "",
-      rootData: []
+      rootData: [],
+      nowPage: 1
 
       /* cateNum1 -> CategoryViewItem 화면이 바뀐다  */
       /* cateNum1 -> CategoryTitle, CatergorySort의 주요변수를 바꾸도록한다 */
@@ -29,7 +32,7 @@ class categoryView extends React.Component {
   }
 
   componentDidMount() {
-    this.getSubData();
+    this.getSubData(this.state.nowPage);
     this.getRootData();
   }
 
@@ -38,8 +41,10 @@ class categoryView extends React.Component {
       prevState.nowPath[0] !== this.props.location.pathname.split("/")[2];
     let diffSub =
       prevState.nowPath[1] !== this.props.location.pathname.split("/")[3];
+    let diffPage = prevState.nowPage !== this.state.nowPage;
     diffRoot && this.getRootData(diffRoot);
-    diffSub && this.getSubData();
+    diffSub && this.getSubData(this.state.nowPage);
+    diffPage && this.getSubData(this.state.nowPage);
   }
 
   getRootData = async () => {
@@ -51,12 +56,12 @@ class categoryView extends React.Component {
     });
   };
 
-  getSubData = () => {
+  getSubData = nowPage => {
     fetch(
       // `https://api.kurly.com/v1/categories/${this.state.cateNum1}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
       `${API_JONG}/products/list/${
         this.props.location.pathname.split("/")[3]
-      }?sort_type=0&viewPage=1`
+      }?sort_type=0&viewPage=${nowPage}`
     )
       .then(res => {
         return res.json();
@@ -64,6 +69,7 @@ class categoryView extends React.Component {
       .then(res => {
         this.setState({
           data: res.data.products,
+          paging: res.paging,
           nowPath: [
             this.props.location.pathname.split("/")[2],
             this.props.location.pathname.split("/")[3]
@@ -71,6 +77,10 @@ class categoryView extends React.Component {
         });
         // console.log("위쪽콘솔 ", this.state.data);
       });
+  };
+
+  changePageNum = num => {
+    this.setState({ nowPage: num });
   };
 
   miniNavNum = pid => {
@@ -125,13 +135,20 @@ class categoryView extends React.Component {
               bridge1={this.miniNavNum}
               cateNum2={this.state.cateNum1}
               data={this.state.rootData}
+              // getSubData={this.getSubData}
             />
           </div>
           <CategoryViewItem
             bridge2={this.state.cateNum}
             bridge3={this.state.data}
           />
-          <CategoryPage />
+          {/* <CategoryPage /> */}
+          <PageBtn
+            nowPage={this.state.nowPage}
+            changePageNum={this.changePageNum}
+            paging={this.state.paging}
+          />
+          <div style={{ height: "50px" }} />
         </div>
         <Footer />
       </div>

@@ -45,12 +45,15 @@ export default class Detail extends Component {
       // 장바구니로 Go!
       thumb: "",
       productName: "",
-      popPrice: 0
+      popPrice: 0,
+      nowCart: {}
     };
   }
 
   componentDidMount = () => {
-    console.log(this.props.location.pathname.split("/")[2]);
+    // console.log(this.props.location.pathname.split("/")[2]);
+    window.scroll(0, 0);
+    this.getCartData();
     window.addEventListener("scroll", this.onScroll);
 
     fetch("http://localhost:3000/data/data.json")
@@ -64,7 +67,6 @@ export default class Detail extends Component {
     fetch(`${API_JONG}/products/${this.props.location.pathname.split("/")[2]}`)
       .then(res => res.json())
       .then(res => {
-        console.log(res.data);
         this.setState(
           {
             info: res.data
@@ -74,6 +76,21 @@ export default class Detail extends Component {
           }
         );
       });
+  };
+
+  getCartData = async () => {
+    console.log("hi");
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    const data = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const dataJSON = await data.json();
+    console.log(dataJSON);
+
+    this.setState({ nowCart: dataJSON });
   };
 
   onScroll = e => {
@@ -202,8 +219,23 @@ export default class Detail extends Component {
     });
   };
 
+  postCartItem = async (product_num, quantity) => {
+    console.log(product_num, quantity);
+    const goCart = { product_num: product_num, quantity: quantity };
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    await fetch(`${API_JONG}/orders/cart`, {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(goCart)
+    });
+  };
+
   // 장바구니 버튼 클릭 시, 정보 넘겨주기
   onChangeCart = (url, name, price) => {
+    this.postCartItem(this.state.info.no, this.state.number);
     this.setState({
       thumb: url,
       productName: name,
@@ -277,11 +309,7 @@ export default class Detail extends Component {
             handleOnClickSave={this.handleOnClickSave}
             togglePopUp={this.togglePopUp}
             onChangeCart={() =>
-              this.onChangeCart(
-                "https://img-cf.kurly.com/shop/data/goods/1583297303173l0.jpg",
-                "조각무 2조각",
-                1350
-              )
+              this.onChangeCart(mainImg, info.name, this.state.price)
             }
             save={save}
           />

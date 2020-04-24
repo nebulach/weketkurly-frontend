@@ -49,10 +49,14 @@ class Nav extends Component {
     window.addEventListener("scroll", this.onScroll);
   }
 
-  componentDidUpdate(prevState) {
-    if (prevState.isSameProps !== this.state.isSameProps) {
-      this.props.productName === "조각무 2조각" && this.isSameCount();
-    }
+  componentDidUpdate() {
+    this.props.productName !== "" &&
+      this.props.productName !== undefined &&
+      this.isSameCount();
+    // console.log(prevState.isSameProps, this.state.isSameProps);
+    // if (prevState.isSameProps !== this.state.isSameProps) {
+    //   this.props.productName === "조각무 2조각" && this.isSameCount();
+    // }
   }
 
   componentWillUnmount() {
@@ -74,22 +78,15 @@ class Nav extends Component {
   };
 
   getApi = async url => {
-    console.log(url);
     const data = await fetch(`${API_JONG}/${url}`); //API 주소
     const dataJSON = await data.json();
 
-    this.setState(
-      {
-        data: dataJSON.data
-      },
-      () => {
-        console.log("data", this.state.data);
-      }
-    );
+    this.setState({
+      data: dataJSON.data
+    });
   };
 
   movePath = menu => {
-    console.log(menu);
     // console.log(e.target);
     // if (menu === "기본 채소") {
     this.props.history.push("/categoryview" + menu);

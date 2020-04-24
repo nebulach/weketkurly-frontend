@@ -28,7 +28,7 @@ const ItemListRow = ({ itemList, itemCheck, itemCount, deleteItem }) => {
           <div>
             <button
               id={`${idx}.${param["price"]}.${param["ea"]}`}
-              onClick={itemCount}
+              onClick={e => itemCount(e, param.id)}
               style={{ borderRight: "1px solid #ddd" }}
             >
               -
@@ -36,7 +36,7 @@ const ItemListRow = ({ itemList, itemCheck, itemCount, deleteItem }) => {
             <span>{itemList && String(itemList[idx]["ea"])}</span>
             <button
               id={`${idx}.${param["price"]}.${param["ea"]}`}
-              onClick={itemCount}
+              onClick={e => itemCount(e, param.id)}
               style={{ borderLeft: "1px solid #ddd" }}
             >
               +
@@ -47,7 +47,7 @@ const ItemListRow = ({ itemList, itemCheck, itemCount, deleteItem }) => {
           {(itemList[idx]["ea"] * itemList[idx]["price"]).toLocaleString()}
         </td>
         <td
-          onClick={() => deleteItem(idx)}
+          onClick={() => deleteItem(idx, param.id)}
           // id={`${idx}.${param["price"]}.${param["ea"]}`}
         >
           <img
