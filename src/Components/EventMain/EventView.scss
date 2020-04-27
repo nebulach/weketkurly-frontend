@@ -18,17 +18,15 @@
           left: 30px;
           top: 58%;
           position: absolute;
-          cursor: pointer;
           background-color: $color;
           color: #fff;
-          font-family: "Malgun Gothic";
-          font-weight: 500;
           font-size: 24px;
           letter-spacing: -0.02em;
           border-radius: 50px;
           text-align: center;
           line-height: 75px;
           box-shadow: 4px 10px 20px #999;
+          cursor: pointer;
           &:hover {
             background-color: #fff;
             border: 2px solid $color;
