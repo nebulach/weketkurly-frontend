@@ -20,77 +20,77 @@ class CategoryTitle extends Component {
       */
     };
   }
-  componentDidMount() {
-    fetch("https://api.kurly.com/v2/categories")
-      .then(res => {
-        if (this.state.cateNum1[0] === "907") {
-          this.setState({
-            sortOrder: "0"
-          });
-        } else if (this.state.cateNum1[0] === "908") {
-          this.setState({
-            sortOrder: "1"
-          });
-        } else if (this.state.cateNum1[0] === "909") {
-          this.setState({
-            sortOrder: "2"
-          });
-        } else if (this.state.cateNum1[0] === "910") {
-          this.setState({
-            sortOrder: "3"
-          });
-        } else if (this.state.cateNum1[0] === "911") {
-          this.setState({
-            sortOrder: "4"
-          });
-        } else if (this.state.cateNum1[0] === "912") {
-          this.setState({
-            sortOrder: "5"
-          });
-        } else if (this.state.cateNum1[0] === "913") {
-          this.setState({
-            sortOrder: "6"
-          });
-        } else if (this.state.cateNum1[0] === "914") {
-          this.setState({
-            sortOrder: "7"
-          });
-        } else if (this.state.cateNum1[0] === "915") {
-          this.setState({
-            sortOrder: "8"
-          });
-        } else if (this.state.cateNum1[0] === "032") {
-          this.setState({
-            sortOrder: "9"
-          });
-        } else if (this.state.cateNum1[0] === "918") {
-          this.setState({
-            sortOrder: "10"
-          });
-        } else if (this.state.cateNum1[0] === "916") {
-          this.setState({
-            sortOrder: "11"
-          });
-        } else if (this.state.cateNum1[0] === "085") {
-          this.setState({
-            sortOrder: "12"
-          });
-        } else if (this.state.cateNum1[0] === "919") {
-          this.setState({
-            sortOrder: "13"
-          });
-        } else if (this.state.cateNum1[0] === "991") {
-          this.setState({
-            sortOrder: "14"
-          });
-        }
-        console.log("cateNum1", this.state.cateNum1);
-        return res.json();
-      })
-      .then(res => {
-        this.setState({ data: res.data.categories });
-      });
-  }
+  // componentDidMount() {
+  //   fetch("https://api.kurly.com/v2/categories")
+  //     .then(res => {
+  //       if (this.state.cateNum1[0] === "907") {
+  //         this.setState({
+  //           sortOrder: "0"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "908") {
+  //         this.setState({
+  //           sortOrder: "1"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "909") {
+  //         this.setState({
+  //           sortOrder: "2"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "910") {
+  //         this.setState({
+  //           sortOrder: "3"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "911") {
+  //         this.setState({
+  //           sortOrder: "4"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "912") {
+  //         this.setState({
+  //           sortOrder: "5"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "913") {
+  //         this.setState({
+  //           sortOrder: "6"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "914") {
+  //         this.setState({
+  //           sortOrder: "7"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "915") {
+  //         this.setState({
+  //           sortOrder: "8"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "032") {
+  //         this.setState({
+  //           sortOrder: "9"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "918") {
+  //         this.setState({
+  //           sortOrder: "10"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "916") {
+  //         this.setState({
+  //           sortOrder: "11"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "085") {
+  //         this.setState({
+  //           sortOrder: "12"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "919") {
+  //         this.setState({
+  //           sortOrder: "13"
+  //         });
+  //       } else if (this.state.cateNum1[0] === "991") {
+  //         this.setState({
+  //           sortOrder: "14"
+  //         });
+  //       }
+  //       console.log("cateNum1", this.state.cateNum1);
+  //       return res.json();
+  //     })
+  //     .then(res => {
+  //       this.setState({ data: res.data.categories });
+  //     });
+  // }
 
   render() {
     //맵함수 들어갈 자리
@@ -99,17 +99,19 @@ class CategoryTitle extends Component {
         <div className="sort-title-box">
           <img
             className="sort-icon"
-            src={
-              this.state.data[this.state.sortOrder]
-                ? this.state.data[this.state.sortOrder].pc_icon_url
-                : ""
-            }
+            src={this.props.rootDataAll.icon_active_url}
+            // src={
+            //   this.state.data[this.state.sortOrder]
+            //     ? this.state.data[this.state.sortOrder].pc_icon_url
+            //     : ""
+            // }
             alt=""
           ></img>
           <div className="sort-title-image">
-            {this.state.data[this.state.sortOrder]
+            {this.props.rootDataAll.main_category}
+            {/* {this.state.data[this.state.sortOrder]
               ? this.state.data[this.state.sortOrder].name
-              : ""}
+              : ""} */}
           </div>
         </div>
         {/* 상황조건문 주는 이유 : componentDidMount 다음에 render가 되는데, 

@@ -10,12 +10,12 @@ export default class MyPage extends Component {
 
   componentDidMount() {
     this.getMyInfo();
-    this.getItemList();
+    // this.getItemList();
   }
 
   getMyInfo = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     const user = await fetch(`${API_JONG}/users/mypage`, {
@@ -27,18 +27,17 @@ export default class MyPage extends Component {
     this.setState({ myInfo: userJSON });
   };
 
-  getItemList = async () => {
-    const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
-    myHeaders.append("Content-Type", "application/json");
+  // getItemList = async () => {
+  //   const myHeaders = new Headers();
+  //   myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
+  //   myHeaders.append("Content-Type", "application/json");
 
-    const data = await fetch(`${API_JONG}/orders/cart`, {
-      method: "GET",
-      headers: myHeaders
-    });
-    const dataJSON = await data.json();
-    console.log(dataJSON);
-  };
+  //   const data = await fetch(`${API_JONG}/orders/cart`, {
+  //     method: "GET",
+  //     headers: myHeaders
+  //   });
+  //   const dataJSON = await data.json();
+  // };
 
   render() {
     return (
@@ -63,7 +62,7 @@ export default class MyPage extends Component {
           <li className="point">
             <h2>적립금</h2>
             <div className="won">
-              456원
+              400원
               <img
                 src="https://res.kurly.com/pc/service/common/1905/ico_arrow_56x56.png"
                 alt="자세히 보기"

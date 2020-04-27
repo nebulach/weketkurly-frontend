@@ -62,7 +62,7 @@ export default class Order extends Component {
   ) => {
     const { addr, extraAddr, postcode, targetValue } = this.state;
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     console.log(
       `${addr} ${extraAddr} ${postcode} ${targetValue}`,
@@ -93,7 +93,7 @@ export default class Order extends Component {
 
   getAddress = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     const address = await fetch(`${API_JONG}/users/address`, {
       method: "GET",
@@ -108,7 +108,7 @@ export default class Order extends Component {
 
   getMyInfo = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     const user = await fetch(`${API_JONG}/users/mypage`, {
@@ -123,7 +123,7 @@ export default class Order extends Component {
 
   getCartData = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     const data = await fetch(`${API_JONG}/orders/cart`, {
       method: "GET",

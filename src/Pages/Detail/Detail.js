@@ -84,7 +84,7 @@ export default class Detail extends Component {
 
   getCartData = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     const data = await fetch(`${API_JONG}/orders/cart`, {
       method: "GET",
@@ -224,7 +224,7 @@ export default class Detail extends Component {
     console.log(product_num, quantity);
     const goCart = { product_num: product_num, quantity: quantity };
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     await fetch(`${API_JONG}/orders/cart`, {

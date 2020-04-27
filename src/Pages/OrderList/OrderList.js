@@ -32,7 +32,7 @@ export default class OrderList extends Component {
 
   getAPIData = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     // const cart = await fetch(`${API_JONG}/orders/cart`, {
@@ -42,7 +42,6 @@ export default class OrderList extends Component {
     });
     // const cart = await fetch("http://localhost:3000/data/cart.json");
     const cartJSON = await cart.json();
-    console.log("cartJSON", cartJSON);
 
     this.setState(
       {
@@ -53,7 +52,6 @@ export default class OrderList extends Component {
           {
             itemList: [
               ...this.state.dataProps.map(param => {
-                console.log(param);
                 return {
                   no: param.order_number,
                   date: param.created_at,
@@ -69,7 +67,6 @@ export default class OrderList extends Component {
   };
 
   convertArr = arr => {
-    console.log("convertArr", arr);
     // products - discounted_price, ea, name, original_price, thumbnail_image_url
 
     let sum = 0;

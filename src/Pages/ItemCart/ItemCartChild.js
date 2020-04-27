@@ -28,7 +28,7 @@ class ItemCartChild extends Component {
 
   getAPIData = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     const cart = await fetch(`${API_JONG}/orders/cart`, {
@@ -86,7 +86,7 @@ class ItemCartChild extends Component {
     this.setState({ itemList: tempArr });
 
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     await fetch(`${API_JONG}/orders/cart`, {
       method: "POST",
@@ -114,7 +114,7 @@ class ItemCartChild extends Component {
     });
 
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
 
     await fetch(`${API_JONG}/orders/cart`, {
       method: "DELETE",

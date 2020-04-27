@@ -149,4 +149,16 @@
     width: 26px;
     margin: 0 auto;
   }
+
+  select {
+    float: right;
+    width: 100px;
+    margin-right: 30px;
+    background: url(https://res.kurly.com/pc/ico/1806/ico_arrow_down_16x12.png)
+      no-repeat 121px 14px;
+    // padding-right: 30px;
+    padding: 8px 13px 13px 0;
+    font-size: 12px;
+    text-align: right;
+  }
 }

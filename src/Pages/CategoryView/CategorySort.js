@@ -5,7 +5,9 @@ class CategorySort extends Component {
     super(props);
     this.state = {
       data: [],
-      cateNum2: this.props.cateNum2
+      cateNum2: this.props.cateNum2,
+      options: ["신상품순", "인기상품순", "낮은 가격순", "높은 가격순"],
+      childSort: 0
       /* 채907~베915, 건032, 생918, 주916, 가085, 베919, 반991 */
       /* 앞에 세자리번호를 잘라서 cateNum2로 부여 */
     };
@@ -50,6 +52,16 @@ class CategorySort extends Component {
   //     });
   // };
 
+  setSort = e => {
+    const table = {
+      신상품순: 0,
+      인기상품순: 1,
+      "낮은 가격순": 2,
+      "높은 가격순": 3
+    };
+    this.props.changePageNum(this.props.nowPage, table[e.target.value]);
+  };
+
   render() {
     const sortRendering = this.props.data.map(x => {
       return (
@@ -68,6 +80,11 @@ class CategorySort extends Component {
         부모에 삽입된 컴퍼넌트의 프롭스를 받는다. */
       );
     });
+
+    const sortOptionArr = this.state.options.map((el, idx) => {
+      return <option key={idx}>{el}</option>;
+    });
+
     return (
       <div className="sort-outer">
         <span className="sort-nav-line">
@@ -80,6 +97,7 @@ class CategorySort extends Component {
           </span>
           {sortRendering}
         </span>
+        <select onChange={e => this.setSort(e)}>{sortOptionArr}</select>
       </div>
       //하단 미니 네브 전체보기만
     );
