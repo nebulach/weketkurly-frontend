@@ -9,12 +9,13 @@ export default class List extends Component {
       status,
       thumb,
       price,
-      review_button_flag
+      review_button_flag,
+      time //2020.02.08(19시 34분)
     } = this.props;
 
     return (
       <li className="product">
-        <div className="date">2020.02.08(19시 34분)</div>
+        <div className="date">{time}</div>
         <div className="table">
           <div className="name">{product_name}</div>
           <div className="product-info">
@@ -26,7 +27,7 @@ export default class List extends Component {
                   <dd>{no}</dd>
                 </dl>
                 <dl>
-                  <dt>걸제금액</dt>
+                  <dt>결제금액</dt>
                   <dd>{price.toLocaleString()}원</dd>
                 </dl>
                 <dl>

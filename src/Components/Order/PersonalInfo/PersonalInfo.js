@@ -31,7 +31,7 @@ export default class PersonalInfo extends Component {
           </div>
         </div>
         <div className="payment-btn">
-          <button>결제하기</button>
+          <button onClick={this.props.goPay}>결제하기</button>
           <div className="cancel-notice">
             * 직접 주문취소는 <b>'입금확인'</b> 상태일 경우에만 가능합니다.
           </div>

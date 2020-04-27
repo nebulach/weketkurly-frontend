@@ -9,9 +9,8 @@ import CategorySort from "./CategorySort";
 import CategoryTitle from "./CategoryTitle";
 // import CategoryPage from "./CategoryPage";
 import "./CategoryView.scss";
-import CategoryPage from "./CategoryPage";
 import { API_JONG } from "../../global/env";
-import PageBtn from "../../Components/Detail/ReviewQA/PageBtn";
+import PageBtn from "../../Components/Detail/ReviewQA/PageBtn2";
 class categoryView extends React.Component {
   constructor() {
     super();

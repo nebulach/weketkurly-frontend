@@ -35,13 +35,14 @@ export default class OrderList extends Component {
     myHeaders.append("Authorization", localStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
-    const cart = await fetch(`${API_JONG}/orders/cart`, {
+    // const cart = await fetch(`${API_JONG}/orders/cart`, {
+    const cart = await fetch(`${API_JONG}/orders`, {
       method: "GET",
       headers: myHeaders
     });
     // const cart = await fetch("http://localhost:3000/data/cart.json");
     const cartJSON = await cart.json();
-    console.log(cartJSON);
+    console.log("cartJSON", cartJSON);
 
     this.setState(
       {
@@ -54,15 +55,9 @@ export default class OrderList extends Component {
               ...this.state.dataProps.map(param => {
                 console.log(param);
                 return {
-                  no: param["product_num"],
-                  product_name: param["name"],
-                  price: param["discounted_price"],
-                  original_price: param["original_price"],
-                  ea: param["ea"],
-                  max_ea: param["max_ea"],
-                  min_ea: param["min_ea"],
-                  thumbnail_image_url: param["thumbnail_image_url"],
-                  checked: true
+                  no: param.order_number,
+                  date: param.created_at,
+                  products: param.product
                 };
               })
             ]
@@ -74,21 +69,30 @@ export default class OrderList extends Component {
   };
 
   convertArr = arr => {
-    console.log(arr);
+    console.log("convertArr", arr);
+    // products - discounted_price, ea, name, original_price, thumbnail_image_url
 
     let sum = 0;
-    for (let i of arr) {
-      sum += i.price;
+    let resultArr = [];
+
+    // for (let i of arr[0].products) {
+    //   sum += i.discounted_price;
+    // }
+
+    for (let i = 0; i < arr.length; i++) {
+      for (let j = 0; j < arr[i].products.length; j++) {
+        sum += arr[i].products[j].discounted_price;
+      }
+      resultArr.push({
+        product_name: `${arr[i].products[0].name} 외 ${arr[i].products.length -
+          1}`,
+        no: arr[i].no,
+        thumbnail_image_url: arr[i].products[0].thumbnail_image_url,
+        price: sum,
+        time: arr[i].date
+      });
     }
 
-    let resultArr = [
-      {
-        product_name: `${arr[0].product_name} 외 ${arr.length - 1}`,
-        no: arr[0].product_num,
-        thumbnail_image_url: arr[0].thumbnail_image_url,
-        price: sum
-      }
-    ];
     this.setState({ convertedArr: resultArr });
   };
 
@@ -110,6 +114,7 @@ export default class OrderList extends Component {
                   thumb={el.thumbnail_image_url}
                   review_button_flag={el.review_button_flag}
                   price={el.price}
+                  time={el.time}
                 />
               );
             })}

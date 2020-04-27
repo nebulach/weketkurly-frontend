@@ -1,11 +1,15 @@
 import React, { Component } from "react";
 import "./ProductDetail.scss";
+import "./KurlyOrigin.scss";
 
 export default class ProductDetail extends Component {
   render() {
+    const { product_description } = this.props.info;
     return (
       <div className="detail">
-        <img
+        <div dangerouslySetInnerHTML={{ __html: product_description }}></div>
+
+        {/* <img
           className="detail-main-img"
           alt="메인 이미지"
           src="https://img-cf.kurly.com/shop/data/goodsview/20200304/gv10000083980_1.jpg"
@@ -40,12 +44,12 @@ export default class ProductDetail extends Component {
           <div className="line-left" />
           <h3>Kurly's Pick</h3>
           <div className="line-right" />
-        </div>
+        </div> */}
 
         {/* <div className = "pick-img">
                         <img src = "https://img-cf.kurly.com/shop/data/goodsview/20190730/gv40000057640_1.jpg" alt = "Kurly's Pick" />
                     </div> */}
-
+        {/* 
         <div className="txt">
           <div className="txtTitle">조각무 2조각</div>
           <div className="txtContents">
@@ -70,7 +74,7 @@ export default class ProductDetail extends Component {
               담아 밀폐 보관해 주세요.
             </span>
           </div>
-        </div>
+        </div> */}
 
         {/* <div className="kurly-tip">
           <h3>Kurly's Tip</h3>

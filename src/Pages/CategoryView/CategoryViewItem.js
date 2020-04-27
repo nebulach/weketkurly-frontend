@@ -25,7 +25,7 @@ class CategoryViewItem extends Component {
       this.props.bridge3 !== undefined &&
       this.props.bridge3.map(x => {
         return (
-          <div className="product-box" onClick={() => this.goDetail(x.id)}>
+          <div className="product-box" onClick={() => this.goDetail(x.no)}>
             <div className="img-box">
               <img className="cate-image" src={x.list_image_url} alt=""></img>
             </div>

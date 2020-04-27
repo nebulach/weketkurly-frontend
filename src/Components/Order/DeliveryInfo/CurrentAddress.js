@@ -9,14 +9,24 @@ export default class CurrentAddress extends Component {
           <th>주소</th>
           <td>
             <input
-              value="서울 강서구 화곡동 504-162 (수정맨션) [157-894]"
+              value={
+                this.props.myAddress.length !== 0 &&
+                this.props.myAddress[0].address.split("]")[0]
+              }
               className="address-main"
               readOnly="readOnly"
             />
-            <input value="202호" readOnly="readOnly" />
+            <input
+              value={
+                this.props.myAddress.length !== 0 &&
+                this.props.myAddress[0].address.split("]")[1]
+              }
+              readOnly="readOnly"
+            />
             <span>29자 / 85자</span>
             <div className="road">
-              서울 강서구 등촌로13나길 38 (수정맨션) [07733] 202호
+              {this.props.myAddress.length !== 0 &&
+                this.props.myAddress[0].address}
             </div>
           </td>
         </tr>

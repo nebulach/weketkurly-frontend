@@ -11,6 +11,7 @@ import PaymentMethod from "../../Components/Order/Payment method/PaymentMethod";
 import PersonalInfo from "../../Components/Order/PersonalInfo/PersonalInfo";
 import Footer from "../../Components/Layout/Footer";
 import "./Order.scss";
+import { API_JONG } from "../../global/env";
 
 export default class Order extends Component {
   constructor(props) {
@@ -36,14 +37,106 @@ export default class Order extends Component {
       extraAddr: "",
       postcode: "",
       targetValue: "",
-      text: ""
+      text: "",
+
+      listCart: [],
+      myInfo: {},
+      myAddress: []
     };
   }
 
   componentDidMount = () => {
     window.addEventListener("scroll", this.onScroll);
+    this.getPayData();
+    this.getCartData();
+    this.getMyInfo();
+    this.getAddress();
+  };
 
-    fetch("http://10.58.1.118:8000/orders/card")
+  goPay = async (
+    receiver_name,
+    receiver_phone,
+    delivery_request,
+    new_address,
+    address
+  ) => {
+    const { addr, extraAddr, postcode, targetValue } = this.state;
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    console.log(
+      `${addr} ${extraAddr} ${postcode} ${targetValue}`,
+      this.state.myAddress[0].address
+    );
+
+    const data = await fetch(`${API_JONG}/orders`, {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify({
+        receiver_name: this.state.myInfo.name,
+        receiver_phone: this.state.myInfo.phone,
+        delivery_request: "8282",
+        address: this.state.isChecked
+          ? `${addr} ${extraAddr} ${postcode} ${targetValue}`
+          : this.state.myAddress[0].address
+      })
+    });
+    console.log("request res", data);
+
+    if (data.status === 200) {
+      alert("정상적으로 구매되었습니다");
+      this.props.history.push("/orderlist");
+    } else {
+      alert("예외 발생");
+    }
+  };
+
+  getAddress = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    const address = await fetch(`${API_JONG}/users/address`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const addressJSON = await address.json();
+
+    console.log("addressJSON", addressJSON.data);
+
+    this.setState({ myAddress: addressJSON.data });
+  };
+
+  getMyInfo = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const user = await fetch(`${API_JONG}/users/mypage`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const userJSON = await user.json();
+
+    this.setState({ myInfo: userJSON });
+    console.log(userJSON);
+  };
+
+  getCartData = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    const data = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const dataJSON = await data.json();
+
+    console.log(dataJSON);
+    this.setState({ listCart: dataJSON.data });
+  };
+
+  getPayData = () => {
+    fetch(`${API_JONG}/orders/card`)
       .then(res => res.json())
       .then(res => {
         this.setState({
@@ -198,7 +291,8 @@ export default class Order extends Component {
       extraAddr,
       postcode,
       targetValue,
-      text
+      text,
+      myAddress
     } = this.state;
 
     return (
@@ -208,14 +302,21 @@ export default class Order extends Component {
           <h1>주문서</h1>
           <h3>주문하실 상품명 및 수량을 정확하게 확인해 주세요.</h3>
         </div>
-
         {detail ? (
-          <Open detail={detail} />
+          <Open
+            listCart={this.state.listCart.length !== 0 && this.state.listCart}
+            detail={detail}
+          />
         ) : (
-          <Close detail={detail} handleChangeDetail={this.handleChangeDetail} />
+          <Close
+            listCart={
+              this.state.listCart.length !== 0 ? this.state.listCart : []
+            }
+            detail={detail}
+            handleChangeDetail={this.handleChangeDetail}
+          />
         )}
-
-        <UserInfo />
+        <UserInfo myInfo={this.state.myInfo} />
         <DeliveryInfo
           isChecked={isChecked}
           addr={addr}
@@ -226,6 +327,7 @@ export default class Order extends Component {
           onChangeAdr={this.handleChangeAdr}
           targetValue={targetValue}
           text={text}
+          myAddress={myAddress}
         />
         <Notice />
         <PaymentBar top={top} />
@@ -250,7 +352,7 @@ export default class Order extends Component {
           handleChange={this.handleChange}
           onChangeValue={this.onChangeValue}
         />
-        <PersonalInfo />
+        <PersonalInfo goPay={this.goPay} />
         <Footer />
       </div>
     );

@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import "./UserInfo.scss";
 
 export default class UserInfo extends Component {
+  constructor() {
+    super();
+    this.state = {
+      myInfo: {}
+    };
+  }
+
   render() {
+    const { myInfo } = this.props;
     return (
       <div className="user-info">
         <h2>주문자 정보</h2>
@@ -12,7 +20,11 @@ export default class UserInfo extends Component {
               <tr>
                 <th>보내는 분 *</th>
                 <td className="name">
-                  <input type="text" readOnly="readOnly" value="이은지" />
+                  <input
+                    type="text"
+                    readOnly="readOnly"
+                    value={myInfo.name && myInfo.name}
+                  />
                 </td>
               </tr>
               <tr>
@@ -21,17 +33,25 @@ export default class UserInfo extends Component {
                   <input
                     type="number"
                     readOnly="readOnly"
-                    value="010"
+                    value={myInfo.name && myInfo.phone.substr(0, 3)}
                     style={{ width: "45px" }}
                   />
                   <span className="bar">
                     <span />
                   </span>
-                  <input type="number" readOnly="readOnly" value="6203" />
+                  <input
+                    type="number"
+                    readOnly="readOnly"
+                    value={myInfo.name && myInfo.phone.substr(3, 4)}
+                  />
                   <span className="bar">
                     <span />
                   </span>
-                  <input type="number" readOnly="readOnly" value="2452" />
+                  <input
+                    type="number"
+                    readOnly="readOnly"
+                    value={myInfo.name && myInfo.phone.substr(7, 4)}
+                  />
                 </td>
               </tr>
               <tr>
@@ -39,7 +59,7 @@ export default class UserInfo extends Component {
                 <td className="email">
                   <input
                     type="text"
-                    value="leeeeunz@gmail.com"
+                    value={myInfo.name && myInfo.email}
                     readOnly="readOnly"
                   />
                   <p>

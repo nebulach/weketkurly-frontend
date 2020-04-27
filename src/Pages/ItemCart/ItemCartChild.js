@@ -251,7 +251,11 @@ class ItemCartChild extends Component {
           </table>
           <ItemTotalPrice priceCalc={this.priceCalc} />
           <button
-            onClick={this.goToOrder}
+            onClick={
+              checkedCount
+                ? this.goToOrder
+                : () => alert("장바구니에 담긴 상품이 없습니다")
+            }
             className={checkedCount ? "order-btn btn-on" : "order-btn btn-off"}
           >
             주문하기

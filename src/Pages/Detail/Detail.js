@@ -16,6 +16,7 @@ import Bar from "../../Components/Detail/Detail/Bar";
 import Footer from "../../Components/Layout/Footer";
 import "./Detail.scss";
 import { API_JONG } from "../../global/env";
+import DetailImage from "./DetailImage";
 
 export default class Detail extends Component {
   constructor(props) {
@@ -51,16 +52,19 @@ export default class Detail extends Component {
   }
 
   componentDidMount = () => {
-    // console.log(this.props.location.pathname.split("/")[2]);
     window.scroll(0, 0);
     this.getCartData();
     window.addEventListener("scroll", this.onScroll);
 
-    fetch("http://localhost:3000/data/data.json")
+    fetch(
+      `${API_JONG}/products/related/${
+        this.props.location.pathname.split("/")[2]
+      }`
+    )
       .then(res => res.json())
       .then(res => {
         this.setState({
-          data: res.data
+          relatedData: res.data
         });
       });
 
@@ -79,7 +83,6 @@ export default class Detail extends Component {
   };
 
   getCartData = async () => {
-    console.log("hi");
     const myHeaders = new Headers();
     myHeaders.append("Authorization", localStorage.getItem("wetoken"));
 
@@ -88,7 +91,6 @@ export default class Detail extends Component {
       headers: myHeaders
     });
     const dataJSON = await data.json();
-    console.log(dataJSON);
 
     this.setState({ nowCart: dataJSON });
   };
@@ -110,7 +112,6 @@ export default class Detail extends Component {
   };
 
   handleOnClickPlus = () => {
-    console.log(this.state.price);
     this.setState({
       number: this.state.number + 1,
       price: this.state.price + this.state.info.discounted_price,
@@ -256,7 +257,8 @@ export default class Detail extends Component {
       moreBtn,
       translate,
       info,
-      data
+      data,
+      relatedData
     } = this.state;
 
     // 상품 이미지
@@ -330,14 +332,15 @@ export default class Detail extends Component {
         <RelatedProductSlide
           next={next}
           dataImg={
-            data &&
-            this.state.data.map(el => {
+            relatedData &&
+            this.state.relatedData.map((el, idx) => {
               return (
                 <DetailSlide
-                  key={el.id}
-                  img={el.img}
+                  key={el.idx}
+                  img={el.list_image_url}
                   name={el.name}
-                  price={el.price}
+                  price={el.original_price}
+                  no={el.no}
                 />
               );
             })
@@ -383,7 +386,7 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-        <ProductDetail />
+        <ProductDetail info={info} />
         <div className="tab">
           <ul>
             <li
@@ -408,12 +411,12 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-
-        <img
+        <DetailImage info={info} />
+        {/* <img
           className="detail-info"
           src="//img-cf.kurly.com/shop/data/goodsview/20200304/gv00000083982_1.jpg"
           alt="detail-info"
-        />
+        /> */}
         <div className="tab">
           <ul>
             <li
@@ -438,10 +441,10 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-        <WhyKurly />
+        <WhyKurly info={info} />
 
         <div className="full-line" />
-        <Customer moreBtn={moreBtn} onClickMore={this.onClickMore} />
+        {/* <Customer moreBtn={moreBtn} onClickMore={this.onClickMore} /> */}
         <div className="tab">
           <ul>
             <li
