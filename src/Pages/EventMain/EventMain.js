@@ -23,7 +23,7 @@ class EventMain extends Component {
       scrollSale: false,
       scrollTop: 0,
       event: [],
-      best: []
+      best: [],
     };
   }
 
@@ -31,78 +31,78 @@ class EventMain extends Component {
     window.addEventListener("scroll", this.onScroll);
 
     fetch("http://localhost:3000/data/event.json")
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         this.setState({
-          event: res.event
+          event: res.event,
         });
       });
 
     fetch("http://localhost:3000/data/best.json")
-      .then(res => res.json())
-      .then(res => {
+      .then((res) => res.json())
+      .then((res) => {
         this.setState({
-          best: res.best
+          best: res.best,
         });
       });
   };
 
-  onScroll = e => {
+  onScroll = (e) => {
     // 특정위치에 왔을 때, 애니메이션 시작
     const scrollTop = ("scroll", e.srcElement.scrollingElement.scrollTop);
 
     if (scrollTop > 2100 && scrollTop < 3112) {
       this.setState({
         scroll: true,
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       });
     } else {
       this.setState({
-        scroll: false
+        scroll: false,
       });
     }
 
     if (scrollTop > 3000 && scrollTop < 3900) {
       this.setState({
         scrollValue: true,
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       });
     } else {
       this.setState({
-        scrollValue: false
+        scrollValue: false,
       });
     }
 
     if (scrollTop > 3600 && scrollTop < 4850) {
       this.setState({
         scrollEvent: true,
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       });
     } else {
       this.setState({
-        scrollEvent: false
+        scrollEvent: false,
       });
     }
 
     if (scrollTop > 905 && scrollTop < 2600) {
       this.setState({
         scrollArrow: true,
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       });
     } else {
       this.setState({
-        scrollArrow: false
+        scrollArrow: false,
       });
     }
 
     if (scrollTop > 1000 && scrollTop < 2600) {
       this.setState({
         scrollSale: true,
-        scrollTop: scrollTop
+        scrollTop: scrollTop,
       });
     } else {
       this.setState({
-        scrollSale: false
+        scrollSale: false,
       });
     }
   };
@@ -126,6 +126,12 @@ class EventMain extends Component {
     window.scrollTo(0, 0);
   };
 
+  // Router : 메인 페이지로 이동
+  goToMain = () => {
+    this.props.history.push("/");
+    window.scrollTo(0, 0);
+  };
+
   render() {
     const {
       scroll,
@@ -134,7 +140,7 @@ class EventMain extends Component {
       scrollArrow,
       scrollSale,
       event,
-      best
+      best,
     } = this.state;
 
     return (
@@ -149,7 +155,7 @@ class EventMain extends Component {
         <Welcome
           eventList={
             event &&
-            this.state.event.map(el => {
+            this.state.event.map((el) => {
               return (
                 <SaleEventList
                   key={el.alt}
@@ -169,11 +175,12 @@ class EventMain extends Component {
         <Recommend
           bestList={
             best &&
-            this.state.best.map(el => {
+            this.state.best.map((el) => {
               return <EventList img={el.img} alt={el.alt} key={el.alt} />;
             })
           }
           goToJoin={this.goToJoin}
+          goToMain={this.goToMain}
         />
         <Footer />
       </div>
