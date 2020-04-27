@@ -46,15 +46,18 @@ class Nav extends Component {
   componentDidMount() {
     this.getApi("products/category");
     this.getMyInfo();
-    this.getCart();
+    sessionStorage.getItem("wetoken") && this.getCart();
     window.addEventListener("scroll", this.onScroll);
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this.state.myInfo.name === undefined &&
+      sessionStorage.getItem("wetoken") &&
+      this.getMyInfo();
     this.state.itemCartCount !== prevState.itemCartCount && this.getCart();
-    // this.props.productName !== "" &&
-    //   this.props.productName !== undefined &&
-    //   this.isSameCount();
+    this.props.productName !== "" &&
+      this.props.productName !== undefined &&
+      this.isSameCount();
     // console.log(prevState.isSameProps, this.state.isSameProps);
     // if (prevState.isSameProps !== this.state.isSameProps) {
     //   this.props.productName === "조각무 2조각" && this.isSameCount();
@@ -182,12 +185,13 @@ class Nav extends Component {
             {param}
           </p>
         </li>
-      ) : param === "로그 아웃" ? (
+      ) : param === "로그아웃" ? (
         <li
           key={idx}
           onClick={() => {
             sessionStorage.clear();
             this.props.history.push("/");
+            this.setState({ visibleProfile1: false, visibleProfile2: false });
           }}
         >
           <p>{param}</p>
@@ -427,7 +431,9 @@ class Nav extends Component {
               <span>알뜰쇼핑</span>
             </li>
             <li className="nav-bottom-bar-item">
-              <span>이벤트</span>
+              <span onClick={() => this.props.history.push("/eventmain")}>
+                이벤트
+              </span>
             </li>
             <div className="search-wrap">
               <input
