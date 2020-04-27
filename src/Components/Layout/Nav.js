@@ -36,7 +36,7 @@ class Nav extends Component {
         "상품 제안",
         "에코포장 피드백"
       ],
-      itemCartCount: 2,
+      itemCartCount: 0,
       isSameCartCount: 2,
       isSameProps: "",
       myInfo: {}
@@ -46,13 +46,15 @@ class Nav extends Component {
   componentDidMount() {
     this.getApi("products/category");
     this.getMyInfo();
+    this.getCart();
     window.addEventListener("scroll", this.onScroll);
   }
 
-  componentDidUpdate() {
-    this.props.productName !== "" &&
-      this.props.productName !== undefined &&
-      this.isSameCount();
+  componentDidUpdate(prevProps, prevState) {
+    this.state.itemCartCount !== prevState.itemCartCount && this.getCart();
+    // this.props.productName !== "" &&
+    //   this.props.productName !== undefined &&
+    //   this.isSameCount();
     // console.log(prevState.isSameProps, this.state.isSameProps);
     // if (prevState.isSameProps !== this.state.isSameProps) {
     //   this.props.productName === "조각무 2조각" && this.isSameCount();
@@ -65,7 +67,7 @@ class Nav extends Component {
 
   getMyInfo = async () => {
     const myHeaders = new Headers();
-    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
     myHeaders.append("Content-Type", "application/json");
 
     const user = await fetch(`${API_JONG}/users/mypage`, {
@@ -86,6 +88,20 @@ class Nav extends Component {
     });
   };
 
+  getCart = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const data = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const dataJSON = await data.json();
+
+    this.setState({ itemCartCount: dataJSON.data.length });
+  };
+
   movePath = menu => {
     // console.log(e.target);
     // if (menu === "기본 채소") {
@@ -94,15 +110,19 @@ class Nav extends Component {
   };
 
   inputChange = e => {
-    console.log(e.target.value);
-    this.setState({
-      inputSearchValue: e.target.value
-    });
+    if (e.keyCode === 13) {
+      this.props.history.push(`/search?keyword=${e.target.value}&viewPage=1`);
+    } else {
+      this.setState({
+        inputSearchValue: e.target.value
+      });
+    }
   };
 
   isSameCount = () => {
     if (this.props.productName !== this.state.isSameProps) {
       console.log("애니메이션 실행");
+      this.getCart();
       this.setState({
         visibleCartPopup: !this.state.visibleCartPopup,
         isSameProps: this.props.productName
@@ -121,7 +141,7 @@ class Nav extends Component {
       visibleCategory1
     } = this.state;
 
-    if (name === "prof") {
+    if (sessionStorage.getItem("wetoken") !== null && name === "prof") {
       switch (idx) {
         case 1:
           this.setState({
@@ -161,6 +181,16 @@ class Nav extends Component {
           <p style={{ cursor: "pointer" }} onClick={this.goToOrderlist}>
             {param}
           </p>
+        </li>
+      ) : param === "로그 아웃" ? (
+        <li
+          key={idx}
+          onClick={() => {
+            sessionStorage.clear();
+            this.props.history.push("/");
+          }}
+        >
+          <p>{param}</p>
         </li>
       ) : (
         <li key={idx}>
@@ -267,11 +297,35 @@ class Nav extends Component {
                 onMouseEnter={() => this.visible("prof", 1)}
                 onMouseLeave={() => this.visible("prof", 1)}
               >
-                <span id="prof-grade">
-                  {`${this.state.myInfo && this.state.myInfo.grade}`}
-                </span>
-                <span style={{ color: "#5f0080" }}>{`${this.state.myInfo &&
-                  this.state.myInfo.name}님`}</span>
+                {sessionStorage.getItem("wetoken") !== null ? (
+                  <>
+                    <span id="prof-grade">
+                      {`${this.state.myInfo && this.state.myInfo.grade}`}
+                    </span>
+                    <span style={{ color: "#5f0080" }}>
+                      {`${this.state.myInfo && this.state.myInfo.name}님`}
+                    </span>
+                  </>
+                ) : (
+                  <>
+                    <span
+                      onClick={() => {
+                        this.props.history.push("/join");
+                      }}
+                      style={{ color: "#5f0080" }}
+                    >
+                      회원가입
+                    </span>
+                    <span
+                      onClick={() => {
+                        this.props.history.push("/login");
+                      }}
+                    >
+                      로그인
+                    </span>
+                  </>
+                )}
+
                 <ul
                   className="nav-prof-list"
                   style={{
@@ -378,6 +432,7 @@ class Nav extends Component {
             <div className="search-wrap">
               <input
                 onChange={this.inputChange}
+                onKeyUp={this.inputChange}
                 type="text"
                 value={inputSearchValue}
                 required="required"
@@ -395,9 +450,9 @@ class Nav extends Component {
               />
               <input
                 type="text"
-                value={itemCartCount}
+                value={typeof itemCartCount === "number" ? itemCartCount : 0}
                 className="itemcart-count"
-                style={{ display: !itemCartCount && "none" }}
+                style={{ display: "block" }}
               />
               <div
                 style={{

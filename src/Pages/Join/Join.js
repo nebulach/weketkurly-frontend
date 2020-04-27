@@ -72,7 +72,6 @@ class Join extends Component {
         guideIDFirstClass: "guide-id-first3"
       });
     }
-    console.log(e.target.value);
   };
   handlePW = e => {
     this.setState({
@@ -115,8 +114,6 @@ class Join extends Component {
         guidePWThirdClass: "guide-pw-third1"
       });
     }
-
-    console.log(e.target.value);
   };
   handlePWConfirm = e => {
     this.setState({

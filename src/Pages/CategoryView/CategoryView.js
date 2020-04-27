@@ -22,7 +22,9 @@ class categoryView extends React.Component {
       cateNum1: "907",
       nowPath: "",
       rootData: [],
-      nowPage: 1
+      rootDataAll: {},
+      nowPage: 1,
+      nowSort: 0
 
       /* cateNum1 -> CategoryViewItem 화면이 바뀐다  */
       /* cateNum1 -> CategoryTitle, CatergorySort의 주요변수를 바꾸도록한다 */
@@ -36,14 +38,17 @@ class categoryView extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    let diffRoot =
-      prevState.nowPath[0] !== this.props.location.pathname.split("/")[2];
-    let diffSub =
-      prevState.nowPath[1] !== this.props.location.pathname.split("/")[3];
-    let diffPage = prevState.nowPage !== this.state.nowPage;
+    const { nowPage, nowSort } = this.state;
+    const { location } = this.props;
+
+    let diffRoot = prevState.nowPath[0] !== location.pathname.split("/")[2];
+    let diffSub = prevState.nowPath[1] !== location.pathname.split("/")[3];
+    let diffSort = prevState.nowSort !== nowSort;
+    let diffPage = prevState.nowPage !== nowPage;
     diffRoot && this.getRootData(diffRoot);
-    diffSub && this.getSubData(this.state.nowPage);
-    diffPage && this.getSubData(this.state.nowPage);
+    diffSub && this.getSubData(nowPage, nowSort);
+    diffPage && this.getSubData(nowPage, nowSort);
+    diffSort && this.getSubData(nowPage, nowSort);
   }
 
   getRootData = async () => {
@@ -51,16 +56,18 @@ class categoryView extends React.Component {
     const dataJSON = await data.json();
 
     this.setState({
-      rootData: dataJSON.data[this.state.nowPath[0] - 1].subcategory
+      rootData: dataJSON.data[this.state.nowPath[0] - 1].subcategory,
+      rootDataAll: dataJSON.data[this.state.nowPath[0] - 1]
     });
   };
 
-  getSubData = nowPage => {
+  getSubData = (nowPage, nowSort = "0") => {
+    console.log(nowPage, nowSort);
     fetch(
       // `https://api.kurly.com/v1/categories/${this.state.cateNum1}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
       `${API_JONG}/products/list/${
         this.props.location.pathname.split("/")[3]
-      }?sort_type=0&viewPage=${nowPage}`
+      }?sort_type=${nowSort}&viewPage=${nowPage}`
     )
       .then(res => {
         return res.json();
@@ -78,42 +85,43 @@ class categoryView extends React.Component {
       });
   };
 
-  changePageNum = num => {
-    this.setState({ nowPage: num });
+  changePageNum = (num, sort) => {
+    console.log(num, sort);
+    this.setState({ nowPage: num, nowSort: sort });
   };
 
-  miniNavNum = pid => {
-    // console.log("프로덕트아이디는", pid);
-    // fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
-    fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        this.setState(
-          {
-            cateNum2: pid
-            //여기서 cateNum2를 미니네브의 맵함수 no로 연결한다
-          },
-          () => {
-            this.changeProductCardList();
-          }
-        );
-      });
-  };
+  // miniNavNum = pid => {
+  //   // console.log("프로덕트아이디는", pid);
+  //   // fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
+  //   fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
+  //     .then(res => {
+  //       return res.json();
+  //     })
+  //     .then(res => {
+  //       this.setState(
+  //         {
+  //           cateNum2: pid
+  //           //여기서 cateNum2를 미니네브의 맵함수 no로 연결한다
+  //         },
+  //         () => {
+  //           this.changeProductCardList();
+  //         }
+  //       );
+  //     });
+  // };
 
-  changeProductCardList() {
-    fetch(
-      `https://api.kurly.com/v1/categories/${this.state.cateNum2}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
-    )
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        this.setState({ data: res.data.products });
-        // console.log("위쪽콘솔 ", this.state.data);
-      });
-  }
+  // changeProductCardList() {
+  //   fetch(
+  //     `https://api.kurly.com/v1/categories/${this.state.cateNum2}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
+  //   )
+  //     .then(res => {
+  //       return res.json();
+  //     })
+  //     .then(res => {
+  //       this.setState({ data: res.data.products });
+  //       // console.log("위쪽콘솔 ", this.state.data);
+  //     });
+  // }
   /* Nav-본문4. data 바꾸기
   해당함수를 뒤이어 실행하여, 
   바뀐 cateNum의 url로부터 data를 저장한다. 
@@ -129,8 +137,14 @@ class categoryView extends React.Component {
         <Nav />
         <div className="cate-outer">
           <div className="cate-nav">
-            <CategoryTitle cateNum1={this.state.cateNum1} />
+            <CategoryTitle
+              rootDataAll={this.state.rootDataAll}
+              rootData={this.state.rootData}
+              cateNum1={this.state.cateNum1}
+            />
             <CategorySort
+              nowPage={this.state.nowPage}
+              changePageNum={this.changePageNum}
               bridge1={this.miniNavNum}
               cateNum2={this.state.cateNum1}
               data={this.state.rootData}
@@ -145,6 +159,7 @@ class categoryView extends React.Component {
           <PageBtn
             nowPage={this.state.nowPage}
             changePageNum={this.changePageNum}
+            nowSort={this.state.nowSort}
             paging={this.state.paging}
           />
           <div style={{ height: "50px" }} />

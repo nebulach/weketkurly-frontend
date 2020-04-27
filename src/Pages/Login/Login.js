@@ -56,7 +56,7 @@ class Login extends React.Component {
       })
       .then(response => {
         if (response.token) {
-          localStorage.setItem("wetoken", response.token);
+          sessionStorage.setItem("wetoken", response.token);
         }
       });
     //토큰이 있으면 로컬에 저장하기

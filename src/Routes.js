@@ -12,6 +12,7 @@ import ItemCart from "./Pages/ItemCart/ItemCart";
 import CategoryView from "./Pages/CategoryView/CategoryView";
 import Order from "./Pages/Order/Order";
 import OrderList from "./Pages/OrderList/OrderList";
+import SearchPage from "./Pages/CategoryView/SearchPage.js";
 
 class Routes extends React.Component {
   render() {
@@ -31,6 +32,7 @@ class Routes extends React.Component {
           <Route exact path="/eventmain" component={EventMain} />
           <Route exact path="/order" component={Order} />
           <Route exact path="/orderlist" component={OrderList} />
+          <Route path="/search" component={SearchPage} />
         </Switch>
       </Router>
     );

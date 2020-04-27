@@ -9,10 +9,9 @@ class PageBtn extends Component {
   mkButton = () => {
     const arr = this.mkArr();
     const numArr = arr.map((_, idx) => {
-      console.log(this.props);
       return (
         <button
-          onClick={() => this.props.changePageNum(idx + 1)}
+          onClick={() => this.props.changePageNum(idx + 1, this.props.nowSort)}
           className={this.props.nowPage === idx + 1 && "num"}
         >
           {idx + 1}
