@@ -6,7 +6,7 @@ export default class TotalPrice extends Component {
       <div className="total-price-point">
         <div className="total-price">
           <span className="total">총 상품금액: </span>
-          <b className="price">{this.props.price}</b>
+          <b className="price">{this.props.price.toLocaleString()}</b>
           <span className="won">원</span>
         </div>
         <div className="point">

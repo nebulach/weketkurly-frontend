@@ -8,14 +8,14 @@ class CategoryPage extends Component {
     };
   }
   componentDidMount() {
-    fetch("https://api.kurly.com/v2/categories")
-      .then(res => res.json())
-      .then(res => {
-        this.setState({ data: res.data.categories }, () => {
-          // console.log(this.state.data);
-        });
-        // console.log("얘는", this.state.data[0].name);
-      });
+    // fetch(`https://api.kurly.com/v2/categories`)
+    //   .then(res => res.json())
+    //   .then(res => {
+    //     this.setState({ data: res.data.categories }, () => {
+    //       // console.log(this.state.data);
+    //     });
+    //     // console.log("얘는", this.state.data[0].name);
+    //   });
   }
 
   render() {

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 import "./Nav.scss";
 import "../../Styles/reset.scss";
-import { API } from "../../global/env";
+import { API, API_JONG } from "../../global/env";
 
 class Nav extends Component {
   constructor(props) {
@@ -18,7 +18,7 @@ class Nav extends Component {
       scrollY: 0,
       inputSearchValue: "서울 맛집 로드 week.2",
       data: [],
-      dataDepth2: [],
+      dataDepth2: [[], []],
       dataProfileList1: [
         "주문 내역",
         "늘 사는 것",
@@ -38,46 +38,59 @@ class Nav extends Component {
       ],
       itemCartCount: 2,
       isSameCartCount: 2,
-      isSameProps: ""
+      isSameProps: "",
+      myInfo: {}
     };
   }
 
   componentDidMount() {
-    this.getApi("categories");
+    this.getApi("products/category");
+    this.getMyInfo();
     window.addEventListener("scroll", this.onScroll);
   }
 
-  componentDidUpdate(prevState) {
-    if (prevState.isSameProps !== this.state.isSameProps) {
-      this.props.productName === "조각무 2조각" && this.isSameCount();
-    }
+  componentDidUpdate() {
+    this.props.productName !== "" &&
+      this.props.productName !== undefined &&
+      this.isSameCount();
+    // console.log(prevState.isSameProps, this.state.isSameProps);
+    // if (prevState.isSameProps !== this.state.isSameProps) {
+    //   this.props.productName === "조각무 2조각" && this.isSameCount();
+    // }
   }
 
   componentWillUnmount() {
     window.removeEventListener("scroll", this._headerScroll);
   }
 
-  getApi = url => {
-    fetch(`${API}/v2/${url}`) //API 주소
-      .then(res => {
-        return res.json();
-      })
-      .then(
-        res =>
-          this.setState({
-            data: res.data
-          }),
-        () => {
-          console.log("data", this.state.data);
-        }
-      );
+  getMyInfo = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const user = await fetch(`${API_JONG}/users/mypage`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const userJSON = await user.json();
+
+    this.setState({ myInfo: userJSON });
+  };
+
+  getApi = async url => {
+    const data = await fetch(`${API_JONG}/${url}`); //API 주소
+    const dataJSON = await data.json();
+
+    this.setState({
+      data: dataJSON.data
+    });
   };
 
   movePath = menu => {
     // console.log(e.target);
-    if (menu === "기본 채소") {
-      this.props.history.push("/categoryview");
-    }
+    // if (menu === "기본 채소") {
+    this.props.history.push("/categoryview" + menu);
+    // }
   };
 
   inputChange = e => {
@@ -163,31 +176,27 @@ class Nav extends Component {
 
     liCateListdown =
       paramArr &&
-      paramArr.map((param1, idx) => {
+      paramArr.map((param, idx) => {
         return (
           <li
             key={idx}
             onMouseEnter={() => {
               this.visible("cate", 2);
-              this.liCategoryListdown2(param1[1]); // param1을 idx 인덱스의 [1]의 ["name"]을 맵 돌려서 보여주세요
+              this.setState({ dataDepth2: [param[1], param[2]] }); // param을 idx 인덱스의 [1]의 ["name"]을 맵 돌려서 보여주세요
             }}
             onMouseLeave={() => {
               this.visible("cate", 2);
-              this.liCategoryListdown2(param1[1]);
+              this.setState({ dataDepth2: [param[1], param[2]] });
             }}
           >
             <div>
-              <img src={this.state.data.categories[idx].pc_icon_url} alt="" />
-              <span>{param1[0]}</span>
+              <img src={this.state.data[idx].icon_black_url} alt="" />
+              <span>{param[0]}</span>
             </div>
           </li>
         );
       });
     return liCateListdown;
-  };
-
-  liCategoryListdown2 = arr => {
-    this.setState({ dataDepth2: arr });
   };
 
   onScroll = () => {
@@ -258,8 +267,11 @@ class Nav extends Component {
                 onMouseEnter={() => this.visible("prof", 1)}
                 onMouseLeave={() => this.visible("prof", 1)}
               >
-                <span id="prof-grade">일반</span>
-                <span style={{ color: "#5f0080" }}>이은지님</span>
+                <span id="prof-grade">
+                  {`${this.state.myInfo && this.state.myInfo.grade}`}
+                </span>
+                <span style={{ color: "#5f0080" }}>{`${this.state.myInfo &&
+                  this.state.myInfo.name}님`}</span>
                 <ul
                   className="nav-prof-list"
                   style={{
@@ -322,22 +334,25 @@ class Nav extends Component {
               >
                 <div style={{ width: visibleCategory1 ? "438px" : null }}>
                   <ul className="category-listdown-depth1">
-                    {data.categories
-                      ? this.liCategoryListdown(
-                          data.categories.map((param, _) => {
-                            return [param["name"], param["categories"]];
-                          })
-                        )
-                      : null}
+                    {data.length !== 0 &&
+                      this.liCategoryListdown(
+                        data.map((param, _) => {
+                          return [
+                            param["main_category"],
+                            param["subcategory"],
+                            param["main_id"]
+                          ];
+                        })
+                      )}
                   </ul>
                   <ul
                     style={{ display: visibleCategory1 && "flex" }}
                     className="category-listdown-depth2"
                   >
-                    {dataDepth2.map((param, idx) => (
+                    {dataDepth2[0].map((param, idx) => (
                       <li
                         onClick={() => {
-                          this.movePath("기본 채소");
+                          this.movePath(`/${dataDepth2[1]}/${param.id}`);
                         }}
                         key={idx}
                       >

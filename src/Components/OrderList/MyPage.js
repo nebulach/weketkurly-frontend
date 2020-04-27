@@ -1,18 +1,59 @@
 import React, { Component } from "react";
 import "./MyPage.scss";
+import { API_JONG } from "../../global/env";
 
 export default class MyPage extends Component {
+  constructor() {
+    super();
+    this.state = { myInfo: {} };
+  }
+
+  componentDidMount() {
+    this.getMyInfo();
+    this.getItemList();
+  }
+
+  getMyInfo = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const user = await fetch(`${API_JONG}/users/mypage`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const userJSON = await user.json();
+
+    this.setState({ myInfo: userJSON });
+  };
+
+  getItemList = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const data = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const dataJSON = await data.json();
+    console.log(dataJSON);
+  };
+
   render() {
     return (
       <div className="my-page-top">
         <ul>
           <li className="user">
-            <div className="user-grade">일반</div>
+            <div className="user-grade">{`${this.state.myInfo.grade}`}</div>
             <div className="user-info">
               <h3>
-                이은지<span>님</span>
+                {`${this.state.myInfo.name}`}
+                <span>님</span>
               </h3>
-              <div className="save-point">0.5% 적립</div>
+              <div className="save-point">
+                {`${this.state.myInfo.grade_info}`}
+              </div>
               <div className="btn">
                 <button>전체등급 보기</button>
                 <button>다음 달 예상등급 보기</button>

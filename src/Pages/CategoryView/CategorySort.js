@@ -11,15 +11,16 @@ class CategorySort extends Component {
     };
   }
   componentDidMount() {
-    fetch(`https://api.kurly.com/v1/category/${this.state.cateNum2}`)
-      //미니네브 데이터 받아오는 url
-      .then(res => {
-        return res.json();
-      })
-      .then(res => {
-        // console.log("res.data 진입하면 ", res.data.root_category.categories);
-        this.setState({ data: res.data.root_category.categories });
-      });
+    console.log(this.state.cateNum2);
+    // fetch(`https://api.kurly.com/v1/category/${this.state.cateNum2}`)
+    //   //미니네브 데이터 받아오는 url
+    //   .then(res => {
+    //     return res.json();
+    //   })
+    //   .then(res => {
+    //     // console.log("res.data 진입하면 ", res.data.root_category.categories);
+    //     this.setState({ data: res.data.root_category.categories });
+    //   });
   }
 
   allViewMove = e => {
@@ -50,13 +51,14 @@ class CategorySort extends Component {
   // };
 
   render() {
-    const sortRendering = this.state.data.map(x => {
+    const sortRendering = this.props.data.map(x => {
       return (
         <span className="sort-box">
           <span
             className="sort-box-menu"
             name={x.no}
-            onClick={() => this.props.bridge1(x.no)}
+            // onClick={() => this.props.bridge1(x.no)}
+            // onClick={this.props.getSubData}
           >
             {x.name}
           </span>

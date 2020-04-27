@@ -3,6 +3,25 @@ import "./Open.scss";
 
 export default class Open extends Component {
   render() {
+    const arrMap = this.props.listCart.map((el, idx) => {
+      return (
+        <tr className="each">
+          <td className="thumb">
+            <img src={el.thumbnail_image_url} alt={el.name} />
+          </td>
+          <td className="info">
+            <div className="name">{el.name}</div>
+            <div>{`${
+              el.ea
+            }개 / 개당 ${el.discounted_price.toLocaleString()}원`}</div>
+          </td>
+          <td className="price">
+            {`${(el.ea * el.discounted_price).toLocaleString()}`}원
+          </td>
+        </tr>
+      );
+    });
+
     return (
       <div className="product-info-open">
         <h2>상품정보</h2>
@@ -14,23 +33,7 @@ export default class Open extends Component {
               <th>상품금액</th>
             </tr>
           </thead>
-          <tbody>
-            <tr className="each">
-              <td className="thumb">
-                <img
-                  src="https://img-cf.kurly.com/shop/data/goods/1533198937448s0.jpg"
-                  alt="[선물세트] 유기샘 브라질너트 바삭대추 세트"
-                />
-              </td>
-              <td className="info">
-                <div className="name">
-                  [선물세트] 유기샘 브라질너트 바삭대추 세트
-                </div>
-                <div>1개 / 개당 37,000원</div>
-              </td>
-              <td className="price">37,000원</td>
-            </tr>
-          </tbody>
+          <tbody>{arrMap}</tbody>
         </table>
       </div>
     );

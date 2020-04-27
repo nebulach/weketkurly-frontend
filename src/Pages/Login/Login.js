@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import Nav from "../../Components/Layout/Nav";
 import Footer from "../../Components/Layout/Footer";
 import "./Login.scss";
+import { API_JONG } from "../../global/env";
 
 class Login extends React.Component {
   constructor() {
@@ -25,7 +26,7 @@ class Login extends React.Component {
     console.log(e.target.value);
   };
   loginFetch = () => {
-    fetch("http://10.58.2.245:8000/users/sign-in", {
+    fetch(`${API_JONG}/users/sign-in`, {
       method: "POST",
       headers: {
         "Content-type": "application/json"
@@ -49,7 +50,8 @@ class Login extends React.Component {
           console.log(response);
           // this.props.history.push("/login");
         }
-        return response.json;
+        console.log(response, response.json);
+        return response.json();
         //response.json으로 하면 에러나서 json을 없애버림. 그런데 갑자기 붙여도 됨.
       })
       .then(response => {

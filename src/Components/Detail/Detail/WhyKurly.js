@@ -1,11 +1,14 @@
 import React, { Component } from "react";
 import "./WhyKurly.scss";
+import "./KurlyOrigin.scss";
 
 export default class WhyKurly extends Component {
   render() {
+    const { product_information } = this.props.info;
     return (
       <div className="why-kurly-table">
-        <table>
+        <div dangerouslySetInnerHTML={{ __html: product_information }}></div>
+        {/* <table>
           <tbody>
             <tr>
               <th>포장단위별 용량(중량), 수량, 크기</th>
@@ -119,7 +122,7 @@ export default class WhyKurly extends Component {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </div>
     );
   }

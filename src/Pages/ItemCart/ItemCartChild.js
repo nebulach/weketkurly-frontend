@@ -5,6 +5,8 @@ import ItemListRow from "./ItemListRow";
 import ItemTableHeader from "./ItemTableHeader";
 import ItemTableFooter from "./ItemTableFooter";
 import ItemTotalPrice from "./ItemTotalPrice";
+import { API_JONG } from "../../global/env";
+import OrderList from "../OrderList/OrderList";
 
 class ItemCartChild extends Component {
   constructor(props) {
@@ -20,26 +22,38 @@ class ItemCartChild extends Component {
   }
 
   componentDidMount() {
+    window.scroll(0, 0);
     this.getAPIData();
   }
 
   getAPIData = async () => {
-    const cart = await fetch("http://localhost:3000/data/cart.json");
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    const cart = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    // const cart = await fetch("http://localhost:3000/data/cart.json");
     const cartJSON = await cart.json();
+    console.log(cartJSON);
 
     this.setState(
       {
         dataProps: cartJSON.data,
-        itemCount: cartJSON.data.products.length,
-        checkedCount: cartJSON.data.products.length
+        itemCount: cartJSON.data.length,
+        checkedCount: cartJSON.data.length
       },
       () => {
         this.setState({
           itemList: [
-            ...this.state.dataProps.products.map(param => {
+            ...this.state.dataProps.map(param => {
+              console.log(param);
               return {
+                id: param["product_num"],
                 name: param["name"],
-                price: param["price"],
+                price: param["discounted_price"],
                 original_price: param["original_price"],
                 ea: param["ea"],
                 max_ea: param["max_ea"],
@@ -54,7 +68,7 @@ class ItemCartChild extends Component {
     );
   };
 
-  itemCount = e => {
+  itemCount = async (e, product_num) => {
     const { itemList } = this.state;
 
     const targetIdx = e.target.id.split(".")[0]; // number
@@ -70,6 +84,43 @@ class ItemCartChild extends Component {
     }
     tempArr[targetIdx] = tempObj;
     this.setState({ itemList: tempArr });
+
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    await fetch(`${API_JONG}/orders/cart`, {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify({
+        product_num: product_num,
+        quantity: tempObj.ea
+      })
+    });
+  };
+
+  deleteItem = async (row, id) => {
+    const { itemCount, checkedCount, chkChecked } = this.state;
+    const targetIdx = row;
+    console.log(row, id);
+
+    const tempArr = [...this.state.itemList]; // itemList 복사
+    const tempArrFilter = tempArr.filter((_, idx) => idx !== targetIdx);
+
+    this.setState({
+      chkChecked: itemCount === 1 ? false : chkChecked,
+      itemList: tempArrFilter,
+      itemCount: itemCount - 1,
+      checkedCount: checkedCount - 1
+    });
+
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    await fetch(`${API_JONG}/orders/cart`, {
+      method: "DELETE",
+      headers: myHeaders,
+      body: JSON.stringify({ product_num: id })
+    });
   };
 
   itemCheck = e => {
@@ -112,22 +163,6 @@ class ItemCartChild extends Component {
         chkChecked: tempAllBoolean ? true : false
       });
     }
-  };
-
-  deleteItem = row => {
-    const { itemCount, checkedCount, chkChecked } = this.state;
-    const targetIdx = row;
-    console.log(row);
-
-    const tempArr = [...this.state.itemList]; // itemList 복사
-    const tempArrFilter = tempArr.filter((_, idx) => idx !== targetIdx);
-
-    this.setState({
-      chkChecked: itemCount === 1 ? false : chkChecked,
-      itemList: tempArrFilter,
-      itemCount: itemCount - 1,
-      checkedCount: checkedCount - 1
-    });
   };
 
   itemProductArr = () => {
@@ -216,7 +251,11 @@ class ItemCartChild extends Component {
           </table>
           <ItemTotalPrice priceCalc={this.priceCalc} />
           <button
-            onClick={this.goToOrder}
+            onClick={
+              checkedCount
+                ? this.goToOrder
+                : () => alert("장바구니에 담긴 상품이 없습니다")
+            }
             className={checkedCount ? "order-btn btn-on" : "order-btn btn-off"}
           >
             주문하기

@@ -14,7 +14,8 @@ export default class DeliveryInfo extends Component {
       onChange,
       onChangeAdr,
       targetValue,
-      text
+      text,
+      myAddress
     } = this.props;
     return (
       <div className="delivery-info">
@@ -59,7 +60,7 @@ export default class DeliveryInfo extends Component {
                   targetValue={targetValue}
                 />
               ) : (
-                <CurrentAddress />
+                <CurrentAddress myAddress={myAddress} />
               )}
 
               <tr className="memo">

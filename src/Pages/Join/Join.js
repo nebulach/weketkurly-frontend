@@ -3,6 +3,7 @@ import { withRouter } from "react-router-dom";
 import Nav from "../../Components/Layout/Nav";
 import Footer from "../../Components/Layout/Footer";
 import "./Join.scss";
+import { API_JONG } from "../../global/env";
 
 class Join extends Component {
   constructor() {
@@ -385,8 +386,8 @@ class Join extends Component {
       );
     }
   };
-  joinFetch = () => {
-    fetch("http://10.58.2.245:8000/users/sign-up", {
+  joinFetch = async () => {
+    const post = await fetch(`${API_JONG}/users/sign-up`, {
       method: "POST",
       body: JSON.stringify({
         account: this.state.ID,
@@ -398,19 +399,31 @@ class Join extends Component {
         birthday: this.state.birth,
         address: this.state.address
       })
-    })
-      .then(response => {
-        console.log(response);
-        if (response.status === 200) {
-          alert("회원가입을 축하드립니다! \n당신의 일상에 컬리를 더해보세요");
-          this.props.history.push("/joincomplete");
-        } else {
-          alert("올바른 가입정보를 기입하여, \n다시 시도하여 주십시오!");
-        }
-        console.log(response.data);
-        return response;
-      })
-      .then(response => {});
+    });
+    const postJSON = await post.json();
+
+    if (post.status === 200) {
+      alert("회원가입을 축하드립니다! \n당신의 일상에 컬리를 더해보세요");
+      this.props.history.push("/joincomplete", { state: postJSON.data });
+    } else {
+      alert("올바른 가입정보를 기입하여, \n다시 시도하여 주십시오!");
+    }
+
+    //   console.log(response);
+    //   if (response.status === 200) {
+    //     alert("회원가입을 축하드립니다! \n당신의 일상에 컬리를 더해보세요");
+    //     this.props.history.push("/joincomplete");
+    //   } else {
+    //     alert("올바른 가입정보를 기입하여, \n다시 시도하여 주십시오!");
+    //   }
+    //   console.log(response.data);
+    //   return response;
+    // })
+    // .then(res => {
+    //   console.log(res);
+    //   return res.json();
+    // })
+    // .then(res => console.log(res));
 
     console.log("account는", this.state.ID);
     console.log("password는", this.state.PW);
@@ -422,7 +435,7 @@ class Join extends Component {
     console.log("address는", this.state.address);
   };
   IDDuplication = () => {
-    fetch("http://10.58.2.245:8000/users/check-account", {
+    fetch(`${API_JONG}/users/check-account`, {
       method: "POST",
       body: JSON.stringify({
         account: this.state.ID
@@ -442,7 +455,7 @@ class Join extends Component {
   };
 
   emailDuplication = () => {
-    fetch("http://10.58.2.245:8000/users/check-email", {
+    fetch(`${API_JONG}/users/check-email`, {
       method: "POST",
       body: JSON.stringify({
         email: this.state.email
@@ -758,7 +771,7 @@ class Join extends Component {
                             className="sex-bullion"
                             type="radio"
                             name="sexBullion"
-                            value="남자"
+                            value="남성"
                             onChange={this.man}
                           ></input>
                           <span>남자</span>
@@ -768,7 +781,7 @@ class Join extends Component {
                             className="sex-bullion"
                             type="radio"
                             name="sexBullion"
-                            value="여자"
+                            value="여성"
                             onChange={this.woman}
                           ></input>
                           <span>여자</span>

@@ -21,7 +21,7 @@ export default class NewAddress extends Component {
             </button>
 
             <input
-              value={addr + extraAddr + postcode}
+              value={`${addr} ${extraAddr} ${postcode}`}
               className="address-main"
               readOnly
             />

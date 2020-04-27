@@ -9,34 +9,82 @@ import CategorySort from "./CategorySort";
 import CategoryTitle from "./CategoryTitle";
 // import CategoryPage from "./CategoryPage";
 import "./CategoryView.scss";
+import { API_JONG } from "../../global/env";
+import PageBtn from "../../Components/Detail/ReviewQA/PageBtn2";
 class categoryView extends React.Component {
   constructor() {
     super();
     this.state = {
+      paging: {},
       data: [],
       data2: [],
       cateNum2: "",
-      cateNum1: "907"
+      cateNum1: "907",
+      nowPath: "",
+      rootData: [],
+      nowPage: 1
 
       /* cateNum1 -> CategoryViewItem 화면이 바뀐다  */
       /* cateNum1 -> CategoryTitle, CatergorySort의 주요변수를 바꾸도록한다 */
       /* 채907~베915, 건032, 생918, 주916, 가085, 베919, 반991 */
     };
   }
+
   componentDidMount() {
+    this.getSubData(this.state.nowPage);
+    this.getRootData();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    let diffRoot =
+      prevState.nowPath[0] !== this.props.location.pathname.split("/")[2];
+    let diffSub =
+      prevState.nowPath[1] !== this.props.location.pathname.split("/")[3];
+    let diffPage = prevState.nowPage !== this.state.nowPage;
+    diffRoot && this.getRootData(diffRoot);
+    diffSub && this.getSubData(this.state.nowPage);
+    diffPage && this.getSubData(this.state.nowPage);
+  }
+
+  getRootData = async () => {
+    const data = await fetch(`${API_JONG}/products/category`);
+    const dataJSON = await data.json();
+
+    this.setState({
+      rootData: dataJSON.data[this.state.nowPath[0] - 1].subcategory
+    });
+  };
+
+  getSubData = nowPage => {
     fetch(
-      `https://api.kurly.com/v1/categories/${this.state.cateNum1}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
+      // `https://api.kurly.com/v1/categories/${this.state.cateNum1}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
+      `${API_JONG}/products/list/${
+        this.props.location.pathname.split("/")[3]
+      }?sort_type=0&viewPage=${nowPage}`
     )
       .then(res => {
         return res.json();
       })
       .then(res => {
-        this.setState({ data: res.data.products });
+        this.setState({
+          data: res.data.products,
+          paging: res.paging,
+          nowPath: [
+            this.props.location.pathname.split("/")[2],
+            this.props.location.pathname.split("/")[3]
+          ]
+        });
         // console.log("위쪽콘솔 ", this.state.data);
       });
-  }
+  };
+
+  changePageNum = num => {
+    this.setState({ nowPage: num });
+  };
+
   miniNavNum = pid => {
     // console.log("프로덕트아이디는", pid);
+    // fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
     fetch(`https://api.kurly.com/v1/category/${this.state.cateNum1}`)
       .then(res => {
         return res.json();
@@ -48,13 +96,6 @@ class categoryView extends React.Component {
             //여기서 cateNum2를 미니네브의 맵함수 no로 연결한다
           },
           () => {
-            console.log(
-              "res.data.root_category.categories는",
-              res.data.root_category.categories
-            );
-            // console.log(e.target.name);
-            console.log("this.data2", this.data2);
-            console.log(this.state.cateNum2);
             this.changeProductCardList();
           }
         );
@@ -92,14 +133,21 @@ class categoryView extends React.Component {
             <CategorySort
               bridge1={this.miniNavNum}
               cateNum2={this.state.cateNum1}
+              data={this.state.rootData}
+              // getSubData={this.getSubData}
             />
           </div>
           <CategoryViewItem
             bridge2={this.state.cateNum}
             bridge3={this.state.data}
-            // bridge4={}
           />
           {/* <CategoryPage /> */}
+          <PageBtn
+            nowPage={this.state.nowPage}
+            changePageNum={this.changePageNum}
+            paging={this.state.paging}
+          />
+          <div style={{ height: "50px" }} />
         </div>
         <Footer />
       </div>

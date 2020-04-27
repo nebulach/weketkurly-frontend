@@ -11,7 +11,9 @@ export default class Close extends Component {
             <tr>
               <td>
                 <div className="name">
-                  [후디스] 그릭 요거트 딸기 & 코코포도 외 1개 상품을 주문합니다.
+                  {this.props.listCart.length !== 0 &&
+                    `${this.props.listCart[0].name} 외 ${this.props.listCart
+                      .length - 1}개 상품을 주문합니다.`}
                 </div>
                 <div
                   className="detail-btn"

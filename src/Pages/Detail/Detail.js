@@ -15,13 +15,15 @@ import PopUp from "../../Components/CartPop/CartPop";
 import Bar from "../../Components/Detail/Detail/Bar";
 import Footer from "../../Components/Layout/Footer";
 import "./Detail.scss";
+import { API_JONG } from "../../global/env";
+import DetailImage from "./DetailImage";
 
 export default class Detail extends Component {
   constructor(props) {
     super(props);
     this.state = {
       number: 1,
-      price: 1350,
+      price: 1000,
       point: 7,
       save: false,
       popUp: false,
@@ -44,28 +46,53 @@ export default class Detail extends Component {
       // 장바구니로 Go!
       thumb: "",
       productName: "",
-      popPrice: 0
+      popPrice: 0,
+      nowCart: {}
     };
   }
 
   componentDidMount = () => {
+    window.scroll(0, 0);
+    this.getCartData();
     window.addEventListener("scroll", this.onScroll);
 
-    fetch("http://localhost:3000/data/data.json")
+    fetch(
+      `${API_JONG}/products/related/${
+        this.props.location.pathname.split("/")[2]
+      }`
+    )
       .then(res => res.json())
       .then(res => {
         this.setState({
-          data: res.data
+          relatedData: res.data
         });
       });
 
-    fetch("https://api.kurly.com/v3/home/products/49635?&ver=1583460405278")
+    fetch(`${API_JONG}/products/${this.props.location.pathname.split("/")[2]}`)
       .then(res => res.json())
       .then(res => {
-        this.setState({
-          info: res.data
-        });
+        this.setState(
+          {
+            info: res.data
+          },
+          () => {
+            this.setState({ price: this.state.info.discounted_price });
+          }
+        );
       });
+  };
+
+  getCartData = async () => {
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+
+    const data = await fetch(`${API_JONG}/orders/cart`, {
+      method: "GET",
+      headers: myHeaders
+    });
+    const dataJSON = await data.json();
+
+    this.setState({ nowCart: dataJSON });
   };
 
   onScroll = e => {
@@ -87,7 +114,7 @@ export default class Detail extends Component {
   handleOnClickPlus = () => {
     this.setState({
       number: this.state.number + 1,
-      price: this.state.price + 1350,
+      price: this.state.price + this.state.info.discounted_price,
       point: this.state.point + 7
     });
   };
@@ -102,7 +129,7 @@ export default class Detail extends Component {
     } else {
       this.setState({
         number: this.state.number - 1,
-        price: this.state.price - 1350,
+        price: this.state.price - this.state.info.discounted_price,
         point: this.state.point - 7
       });
     }
@@ -193,8 +220,23 @@ export default class Detail extends Component {
     });
   };
 
+  postCartItem = async (product_num, quantity) => {
+    console.log(product_num, quantity);
+    const goCart = { product_num: product_num, quantity: quantity };
+    const myHeaders = new Headers();
+    myHeaders.append("Authorization", localStorage.getItem("wetoken"));
+    myHeaders.append("Content-Type", "application/json");
+
+    await fetch(`${API_JONG}/orders/cart`, {
+      method: "POST",
+      headers: myHeaders,
+      body: JSON.stringify(goCart)
+    });
+  };
+
   // 장바구니 버튼 클릭 시, 정보 넘겨주기
   onChangeCart = (url, name, price) => {
+    this.postCartItem(this.state.info.no, this.state.number);
     this.setState({
       thumb: url,
       productName: name,
@@ -215,11 +257,12 @@ export default class Detail extends Component {
       moreBtn,
       translate,
       info,
-      data
+      data,
+      relatedData
     } = this.state;
 
     // 상품 이미지
-    const mainImg = info.original_image_url;
+    const mainImg = info.detail_image_url;
 
     // 슬라이드 기능 구현
     const x = translate;
@@ -244,8 +287,8 @@ export default class Detail extends Component {
           <ProductInfo
             name={info.name}
             short_description={info.short_description}
-            origin={info.origin}
-            price={price.toLocaleString()}
+            origin={info.length !== 0 && info.original_price.toLocaleString()}
+            price={info.length !== 0 && info.discounted_price.toLocaleString()}
             point={point}
             unit_text={info.unit_text}
             weight={info.weight}
@@ -260,16 +303,15 @@ export default class Detail extends Component {
 
         {/* 가격정보 */}
         <div className="total-price-cart">
-          <TotalPrice price={price.toLocaleString()} point={point} />
+          <TotalPrice
+            price={info.length !== 0 && this.state.price}
+            point={point}
+          />
           <CartBtn
             handleOnClickSave={this.handleOnClickSave}
             togglePopUp={this.togglePopUp}
             onChangeCart={() =>
-              this.onChangeCart(
-                "https://img-cf.kurly.com/shop/data/goods/1583297303173l0.jpg",
-                "조각무 2조각",
-                1350
-              )
+              this.onChangeCart(mainImg, info.name, this.state.price)
             }
             save={save}
           />
@@ -290,14 +332,15 @@ export default class Detail extends Component {
         <RelatedProductSlide
           next={next}
           dataImg={
-            data &&
-            this.state.data.map(el => {
+            relatedData &&
+            this.state.relatedData.map((el, idx) => {
               return (
                 <DetailSlide
-                  key={el.id}
-                  img={el.img}
+                  key={el.idx}
+                  img={el.list_image_url}
                   name={el.name}
-                  price={el.price}
+                  price={el.original_price}
+                  no={el.no}
                 />
               );
             })
@@ -343,7 +386,7 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-        <ProductDetail />
+        <ProductDetail info={info} />
         <div className="tab">
           <ul>
             <li
@@ -368,12 +411,12 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-
-        <img
+        <DetailImage info={info} />
+        {/* <img
           className="detail-info"
           src="//img-cf.kurly.com/shop/data/goodsview/20200304/gv00000083982_1.jpg"
           alt="detail-info"
-        />
+        /> */}
         <div className="tab">
           <ul>
             <li
@@ -398,10 +441,10 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-        <WhyKurly />
+        <WhyKurly info={info} />
 
         <div className="full-line" />
-        <Customer moreBtn={moreBtn} onClickMore={this.onClickMore} />
+        {/* <Customer moreBtn={moreBtn} onClickMore={this.onClickMore} /> */}
         <div className="tab">
           <ul>
             <li
@@ -451,7 +494,6 @@ export default class Detail extends Component {
             <div className="line" />
           </ul>
         </div>
-
         <Qa />
         <Bar
           scroll={scroll}

@@ -5,18 +5,23 @@ import Footer from "../../Components/Layout/Footer";
 import "./JoinComplete.scss";
 
 class JoinComplete extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       ID: "",
       PW: ""
     };
   }
+
+  componentDidMount() {
+    console.log(this.props);
+  }
+
   goEvent = () => {
     this.props.history.push("/eventmain");
   };
   goHome = () => {
-    this.props.history.push("/orderlist");
+    this.props.history.push("/login");
   };
   render() {
     return (
@@ -32,15 +37,21 @@ class JoinComplete extends Component {
                 <div>
                   <div className="info-line">
                     <div className="col1">아이디</div>
-                    <div className="col2">sangjin42</div>
+                    <div className="col2">
+                      {this.props.location.state.state.account}
+                    </div>
                   </div>
                   <div className="info-line">
                     <div className="col1">이름</div>
-                    <div className="col2">안상진</div>
+                    <div className="col2">
+                      {this.props.location.state.state.name}
+                    </div>
                   </div>
                   <div className="info-line">
                     <div className="col1">이메일</div>
-                    <div className="col2">sangjin42@naver.com</div>
+                    <div className="col2">
+                      {this.props.location.state.state.email}
+                    </div>
                   </div>
                   <div className="bottom-button-box">
                     <button className="left-button">
@@ -49,7 +60,7 @@ class JoinComplete extends Component {
                       </div>
                     </button>
                     <button className="right-button">
-                      <div onClick={this.goHome}>마이페이지로 이동</div>
+                      <div onClick={this.goHome}>로그인 하기</div>
                     </button>
                   </div>
                 </div>
