@@ -62,7 +62,6 @@ class categoryView extends React.Component {
   };
 
   getSubData = (nowPage, nowSort = "0") => {
-    console.log(nowPage, nowSort);
     fetch(
       // `https://api.kurly.com/v1/categories/${this.state.cateNum1}?page_limit=99&page_no=1&delivery_type=0&sort_type=0&ver=1583215455143`
       `${API_JONG}/products/list/${
