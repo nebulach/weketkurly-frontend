@@ -1,9 +1,11 @@
 # Weket-Kurly
 
-> 2주동안 (2.21 ~ 3.6) 프론트엔드 3명 + 백엔드 2명 총 5명의 개발자들이 한 팀이 되어 프리미엄 온라인 푸든마켓 마켓컬리 클론코딩을 진행하였습니다.
+프리미엄 온라인 푸드마켓 마켓컬리 클론코딩
 
-- 프론트엔드 [Github](https://github.com/wecode-bootcamp-korea/weketkurly-frontend)
-- 백엔드 [Github](https://github.com/wecode-bootcamp-korea/weketkurly-backend)
+- 개발 기간 : 2020.02.21 ~ 2020.03.06
+- 팀원 : 프론트엔드 3명 + 백엔드 2멍
+  - Front-end [Github](https://github.com/wecode-bootcamp-korea/weketkurly-frontend)
+  - Back-end [Github](https://github.com/wecode-bootcamp-korea/weketkurly-backend)
 
 [데모 영상 위치]
 
