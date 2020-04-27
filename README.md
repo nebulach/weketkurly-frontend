@@ -1,11 +1,9 @@
 # Weket-Kurly
 
-프리미엄 온라인 푸드마켓 마켓컬리 클론코딩
+Online Food Market Market Kurly Clone Coding
 
 - 개발 기간 : 2020.02.21 ~ 2020.03.06
-- 팀원 : 프론트엔드 3명 + 백엔드 2멍
-  - Front-end [Github](https://github.com/wecode-bootcamp-korea/weketkurly-frontend)
-  - Back-end [Github](https://github.com/wecode-bootcamp-korea/weketkurly-backend)
+- 팀원 : 프론트엔드 3명 ([Github](https://github.com/wecode-bootcamp-korea/weketkurly-frontend)) + 백엔드 2멍 ([Github](https://github.com/wecode-bootcamp-korea/weketkurly-backend))
 
 [데모 영상 위치]
 
