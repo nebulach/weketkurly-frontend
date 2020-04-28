@@ -3,6 +3,7 @@ import "./PaymentBar.scss";
 
 export default class PaymentBar extends Component {
   render() {
+    const { price } = this.props;
     return (
       <div className="payment-price-wrap">
         <div className="payment-price" style={{ top: `${this.props.top}px` }}>
@@ -11,7 +12,7 @@ export default class PaymentBar extends Component {
             <tbody>
               <tr>
                 <th className="top-th">상품금액</th>
-                <td className="top-td">37,000원</td>
+                <td className="top-td">{price[0]}원</td>
               </tr>
               <tr>
                 <th className="line" />
@@ -19,11 +20,11 @@ export default class PaymentBar extends Component {
               </tr>
               <tr>
                 <th>상품할인금액</th>
-                <td>0원</td>
+                <td>{price[1]}원</td>
               </tr>
               <tr>
                 <th>배송비</th>
-                <td>0원</td>
+                <td>3,000원</td>
               </tr>
               <tr>
                 <th>쿠폰사용</th>
@@ -35,7 +36,7 @@ export default class PaymentBar extends Component {
               </tr>
               <tr>
                 <th className="total-th">최종결제금액</th>
-                <td className="total-td">37,000원</td>
+                <td className="total-td">{price[3]}원</td>
               </tr>
               <tr>
                 <td className="samll-td" colSpan="2">
