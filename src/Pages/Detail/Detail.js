@@ -297,8 +297,9 @@ export default class Detail extends Component {
           <ProductInfo
             name={info.name}
             short_description={info.short_description}
-            origin={info.length !== 0 && info.original_price.toLocaleString()}
-            price={info.length !== 0 && info.discounted_price.toLocaleString()}
+            origin={info.length !== 0 && info.origin}
+            original_price={info.original_price}
+            price={info.length !== 0 && info.discounted_price}
             point={point}
             unit_text={info.unit_text}
             weight={info.weight}

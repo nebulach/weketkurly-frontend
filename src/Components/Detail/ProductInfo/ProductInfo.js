@@ -8,6 +8,7 @@ export default class ProductInfo extends Component {
       name,
       short_description,
       origin,
+      original_price,
       price,
       point,
       unit_text,
@@ -31,8 +32,27 @@ export default class ProductInfo extends Component {
         </div>
 
         <div className="price-bar">
-          <span className="price">{price}</span>
+          <span className="price">{price && price.toLocaleString()}</span>
           <span className="won">원</span>
+          <span
+            style={
+              (((original_price - price) / original_price) * 100).toFixed(0) ===
+              0
+                ? { display: "none" }
+                : {
+                    display: "inline-block",
+                    paddingLeft: "7px",
+                    fontWeight: "600",
+                    fontSize: "28px",
+                    color: "#fa622f",
+                    lineHeight: "30px"
+                  }
+            }
+          >
+            {price &&
+              (((original_price - price) / original_price) * 100).toFixed(0)}
+            %
+          </span>
         </div>
 
         <div className="accumulate">
