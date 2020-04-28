@@ -101,8 +101,6 @@ export default class Order extends Component {
     });
     const addressJSON = await address.json();
 
-    console.log("addressJSON", addressJSON.data);
-
     this.setState({ myAddress: addressJSON.data });
   };
 
@@ -118,7 +116,6 @@ export default class Order extends Component {
     const userJSON = await user.json();
 
     this.setState({ myInfo: userJSON });
-    console.log(userJSON);
   };
 
   getCartData = async () => {
@@ -131,7 +128,6 @@ export default class Order extends Component {
     });
     const dataJSON = await data.json();
 
-    console.log(dataJSON);
     this.setState({ listCart: dataJSON.data });
   };
 
@@ -210,7 +206,7 @@ export default class Order extends Component {
   execPostCode = () => {
     new window.daum.Postcode({
       oncomplete: data => {
-        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분.
+        // 팝업에서 검색결과 항목을 클릭했을    때 실행할 코드를 작성하는 부분.
 
         // 각 주소의 노출 규칙에 따라 주소를 조합한다.
         // 내려오는 변수가 값이 없는 경우엔 공백('')값을 가지므로, 이를 참고하여 분기 한다.
@@ -330,7 +326,7 @@ export default class Order extends Component {
           myAddress={myAddress}
         />
         <Notice />
-        <PaymentBar top={top} />
+        <PaymentBar top={top} price={this.props.history.location.state.price} />
         <Cupon
           point={point}
           usePoint={usePoint}

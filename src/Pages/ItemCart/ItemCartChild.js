@@ -205,7 +205,7 @@ class ItemCartChild extends Component {
   };
 
   goToOrder = () => {
-    this.props.history.push("/order");
+    this.props.history.push("/order", { price: this.priceCalc() });
   };
 
   render() {
