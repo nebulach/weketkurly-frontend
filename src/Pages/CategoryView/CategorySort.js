@@ -69,13 +69,19 @@ class CategorySort extends Component {
           <span
             className="sort-box-menu"
             name={x.no}
-            onClick={() =>
+            style={
+              x.id === this.props.nowChecked
+                ? { color: "#5f00a1", fontWeight: "600" }
+                : null
+            }
+            onClick={() => {
+              this.props.changeNowCheck(x.id);
               this.props.history.push(
                 `/categoryview/${this.props.location.pathname.split("/")[2]}/${
                   x.id
                 }`
-              )
-            }
+              );
+            }}
           >
             {x.name}
           </span>
