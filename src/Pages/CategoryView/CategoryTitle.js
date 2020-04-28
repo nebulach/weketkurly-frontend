@@ -100,6 +100,12 @@ class CategoryTitle extends Component {
         <div className="sort-title-box">
           {this.props.location.pathname.split("/")[1] === "newproducts" ? (
             <span style={{ fontSize: "14px", fontWeight: "500" }}>신상품</span>
+          ) : this.props.location.pathname.split("/")[1] === "best" ? (
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>베스트</span>
+          ) : this.props.location.pathname.split("/")[1] === "sale" ? (
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>
+              알뜰상품
+            </span>
           ) : (
             <img
               className="sort-icon"

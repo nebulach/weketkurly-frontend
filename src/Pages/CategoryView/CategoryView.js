@@ -12,8 +12,8 @@ import "./CategoryView.scss";
 import { API_JONG } from "../../global/env";
 import PageBtn from "../../Components/Detail/ReviewQA/PageBtn2";
 class categoryView extends React.Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
     this.state = {
       paging: {},
       data: [],
@@ -24,7 +24,8 @@ class categoryView extends React.Component {
       rootData: [],
       rootDataAll: {},
       nowPage: 1,
-      nowSort: 0
+      nowSort: 0,
+      nowChecked: 0
 
       /* cateNum1 -> CategoryViewItem 화면이 바뀐다  */
       /* cateNum1 -> CategoryTitle, CatergorySort의 주요변수를 바꾸도록한다 */
@@ -35,6 +36,9 @@ class categoryView extends React.Component {
   componentDidMount() {
     this.getSubData(this.state.nowPage);
     this.getRootData();
+    this.setState({
+      nowChecked: parseInt(this.props.location.pathname.split("/")[3])
+    });
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -87,6 +91,10 @@ class categoryView extends React.Component {
 
   changePageNum = (num, sort) => {
     this.setState({ nowPage: num, nowSort: sort });
+  };
+
+  changeNowCheck = num => {
+    this.setState({ nowChecked: num });
   };
 
   // miniNavNum = pid => {
@@ -147,6 +155,8 @@ class categoryView extends React.Component {
               bridge1={this.miniNavNum}
               cateNum2={this.state.cateNum1}
               data={this.state.rootData}
+              changeNowCheck={this.changeNowCheck}
+              nowChecked={this.state.nowChecked}
               // getSubData={this.getSubData}
             />
           </div>

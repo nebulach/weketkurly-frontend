@@ -11,6 +11,8 @@ import Login from "./Pages/Login/Login";
 import ItemCart from "./Pages/ItemCart/ItemCart";
 import CategoryView from "./Pages/CategoryView/CategoryView";
 import NewCategoryView from "./Pages/CategoryView/NewCategoryView";
+import BestCategoryView from "./Pages/CategoryView/BestCategoryView";
+import SaleCategoryView from "./Pages/CategoryView/SaleCategoryView";
 import Order from "./Pages/Order/Order";
 import OrderList from "./Pages/OrderList/OrderList";
 import SearchPage from "./Pages/CategoryView/SearchPage.js";
@@ -28,6 +30,8 @@ class Routes extends React.Component {
           <Route exact path="/login" component={Login} />
           <Route path="/categoryview" component={CategoryView} />
           <Route path="/newproducts" component={NewCategoryView} />
+          <Route path="/best" component={BestCategoryView} />
+          <Route path="/sale" component={SaleCategoryView} />
           <Route path="/detail" component={Detail} />
           <Route exact path="/footer" component={Footer} />
           <Route exact path="/itemcart" component={ItemCart} />

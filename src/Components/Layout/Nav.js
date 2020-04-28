@@ -427,10 +427,16 @@ class Nav extends Component {
             >
               <span>신상품</span>
             </li>
-            <li className="nav-bottom-bar-item">
+            <li
+              className="nav-bottom-bar-item"
+              onClick={() => this.props.history.push("/best")}
+            >
               <span>베스트</span>
             </li>
-            <li className="nav-bottom-bar-item">
+            <li
+              className="nav-bottom-bar-item"
+              onClick={() => this.props.history.push("/sale")}
+            >
               <span>알뜰쇼핑</span>
             </li>
             <li className="nav-bottom-bar-item">
