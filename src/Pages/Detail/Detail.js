@@ -321,7 +321,9 @@ export default class Detail extends Component {
             handleOnClickSave={this.handleOnClickSave}
             togglePopUp={this.togglePopUp}
             onChangeCart={() =>
-              this.onChangeCart(mainImg, info.name, this.state.price)
+              sessionStorage.getItem("wetoken")
+                ? this.onChangeCart(mainImg, info.name, this.state.price)
+                : () => alert("로그인 하세요")
             }
             save={save}
           />

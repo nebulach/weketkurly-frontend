@@ -14,7 +14,14 @@ export default class CartBtn extends Component {
           >
             늘 사는것
           </button>
-          <button className="go-to-cart" onClick={onChangeCart}>
+          <button
+            className="go-to-cart"
+            onClick={
+              sessionStorage.getItem("wetoken")
+                ? onChangeCart
+                : () => alert("로그인 하세요")
+            }
+          >
             장바구니 담기
           </button>
         </div>
