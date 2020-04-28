@@ -706,18 +706,18 @@ class Join extends Component {
                             onChange={this.handleCellPhone}
                             required
                           ></input>
-                          <div
+                          {/* <div
                             className="normal-button-gray colbutton"
                             onClick={this.goSorry}
                           >
                             인증번호받기
-                          </div>
+                          </div> */}
                         </div>
                       </td>
                     </tr>
                   </tbody>
                 </table>
-                <table>
+                {/* <table>
                   <tbody>
                     <tr>
                       <td className="give-number col1"></td>
@@ -735,8 +735,8 @@ class Join extends Component {
                       </td>
                     </tr>
                   </tbody>
-                </table>
-                <table>
+                </table> */}
+                {/* <table>
                   <tbody>
                     <tr>
                       <td className="address2 col1">배송주소</td>
@@ -757,7 +757,7 @@ class Join extends Component {
                       </td>
                     </tr>
                   </tbody>
-                </table>
+                </table> */}
                 <table>
                   <tbody>
                     <tr>
