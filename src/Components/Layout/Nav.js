@@ -458,7 +458,14 @@ class Nav extends Component {
                 src="https://res.kurly.com/pc/service/common/1908/ico_search_x2.png"
               />
             </div>
-            <div onClick={this.goToCart} className="itemcart">
+            <div
+              onClick={
+                sessionStorage.getItem("wetoken")
+                  ? this.goToCart
+                  : () => alert("로그인 하세요")
+              }
+              className="itemcart"
+            >
               <img
                 alt="장바구니"
                 src="https://res.kurly.com/pc/ico/1908/ico_cart_x2_v2.png"
