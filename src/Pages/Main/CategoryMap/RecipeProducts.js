@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 
 const RecipeProducts = ({ title, recipes }) => {
+  const [offsetX, setOffsetX] = useState(0);
   const recipeList =
     recipes &&
     recipes.map((param, idx) => {
       return (
         <div key={"rcpe" + idx} className="product-item">
           <ul>
-            <li>
+            <li style={{ transform: `translateX(${offsetX})px` }}>
               <a
                 href={param["landing_url"]}
                 style={{
@@ -39,20 +40,30 @@ const RecipeProducts = ({ title, recipes }) => {
   return (
     <>
       <p className="main-font">{title}</p>
-      <div
+      {/* <div
         style={{
           position: "relative"
         }}
       >
         <button
-          style={{ top: "97.5px" }}
+          style={
+            offsetX === 0
+              ? { display: "none", top: "97.5px" }
+              : { display: "block", top: "97.5px" }
+          }
+          onClick={() => setOffsetX(offsetX + 267)}
           className="btn-scroll btn-scroll-left"
         ></button>
         <button
-          style={{ top: "97.5px" }}
+          style={
+            offsetX === (recipes.length - 4) * -267
+              ? { display: "none", top: "97.5px" }
+              : { display: "block", top: "97.5px" }
+          }
+          onClick={() => setOffsetX(offsetX - 267)}
           className="btn-scroll btn-scroll-right"
         ></button>
-      </div>
+      </div> */}
       <div
         style={{ overflow: "hidden", width: "1050px" }}
         className="goods-item"

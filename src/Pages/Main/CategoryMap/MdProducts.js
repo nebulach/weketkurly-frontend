@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import MainItem from "../MainItem";
 
 const MdProducts = ({
@@ -14,6 +14,7 @@ const MdProducts = ({
     backgroundColor: "#5f0080",
     color: "#fff"
   };
+  const [offsetX, setOffsetX] = useState(0);
 
   const categoryList =
     categories &&
@@ -25,7 +26,10 @@ const MdProducts = ({
           className="md-cate-button"
           // id={param["no"] + "." + idx}
           id={param["id"] + "." + idx}
-          onClick={mdClick}
+          onClick={e => {
+            mdClick(e);
+            setOffsetX(0);
+          }}
         >
           {param["name"]}
         </button>
@@ -47,6 +51,7 @@ const MdProducts = ({
           thumbnail_image_url={param["list_image_url"]}
           sticker_image_url={param["sticker_image_url"]}
           // style={moveX}
+          offsetX={offsetX}
         />
       );
     });
@@ -60,11 +65,21 @@ const MdProducts = ({
         }}
       >
         <button
-          style={{ top: "260px" }}
+          style={
+            offsetX === 0
+              ? { display: "none", top: "260px" }
+              : { display: "block", top: "260px" }
+          }
+          onClick={() => setOffsetX(offsetX + 267)}
           className="btn-scroll btn-scroll-left"
         ></button>
         <button
-          style={{ top: "260px" }}
+          style={
+            offsetX === (data.length - 4) * -267
+              ? { display: "none", top: "260px" }
+              : { display: "block", top: "260px" }
+          }
+          onClick={() => setOffsetX(offsetX - 267)}
           className="btn-scroll btn-scroll-right"
         ></button>
       </div>

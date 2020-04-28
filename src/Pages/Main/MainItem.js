@@ -15,14 +15,18 @@ class MainItem extends Component {
       original_price,
       thumbnail_image_url,
       cN,
-      no
+      no,
+      offsetX
     } = this.props;
 
     return (
       <>
         <li
           onClick={() => this.props.history.push(`/detail/${no}`)}
-          style={{ transform: `translateX(${style}px)` }}
+          style={{
+            transform: `translateX(${offsetX}px)`
+            // marginLeft: `${offsetX - 10}px`
+          }}
           className={cN}
         >
           <div
