@@ -1,2 +1,2 @@
 export const API = "https://api.kurly.com";
-export const API_JONG = "https://6a2f0429.ngrok.io";
+export const API_JONG = "http://10.58.1.131:8008";

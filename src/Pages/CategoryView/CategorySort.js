@@ -69,8 +69,13 @@ class CategorySort extends Component {
           <span
             className="sort-box-menu"
             name={x.no}
-            // onClick={() => this.props.bridge1(x.no)}
-            // onClick={this.props.getSubData}
+            onClick={() =>
+              this.props.history.push(
+                `/categoryview/${this.props.location.pathname.split("/")[2]}/${
+                  x.id
+                }`
+              )
+            }
           >
             {x.name}
           </span>
@@ -84,17 +89,27 @@ class CategorySort extends Component {
     const sortOptionArr = this.state.options.map((el, idx) => {
       return <option key={idx}>{el}</option>;
     });
-
+    console.log(this.props.data);
+    console.log(this.props.location.pathname.split("/")[3]);
     return (
       <div className="sort-outer">
         <span className="sort-nav-line">
           <span
             className="all-view"
             name={this.state.cateNum2}
-            onClick={() => this.props.bridge1(this.state.cateNum2)}
+            // onClick={() =>
+            //   this.props.history.push(
+            //     `/categoryview/${this.props.location.pathname.split("/")[2]}/1`
+            //   )
+            // }
           >
             전체보기
           </span>
+          {/* {this.props.location.pathname.split("/")[1] === "newproducts" ? (
+            <span>신상품</span>
+          ) : (
+            sortRendering
+          )} */}
           {sortRendering}
         </span>
         <select onChange={e => this.setSort(e)}>{sortOptionArr}</select>

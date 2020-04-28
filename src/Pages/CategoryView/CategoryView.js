@@ -41,14 +41,15 @@ class categoryView extends React.Component {
     const { nowPage, nowSort } = this.state;
     const { location } = this.props;
 
-    let diffRoot = prevState.nowPath[0] !== location.pathname.split("/")[2];
-    let diffSub = prevState.nowPath[1] !== location.pathname.split("/")[3];
-    let diffSort = prevState.nowSort !== nowSort;
-    let diffPage = prevState.nowPage !== nowPage;
+    let diffRoot = prevState.nowPath[0] !== location.pathname.split("/")[2],
+      diffSub = prevState.nowPath[1] !== location.pathname.split("/")[3],
+      diffSort = prevState.nowSort !== nowSort,
+      diffPage = prevState.nowPage !== nowPage;
+
     diffRoot && this.getRootData(diffRoot);
-    diffSub && this.getSubData(nowPage, nowSort);
-    diffPage && this.getSubData(nowPage, nowSort);
-    diffSort && this.getSubData(nowPage, nowSort);
+    (diffSub || diffPage || diffSort) && this.getSubData(nowPage, nowSort);
+    // && this.getSubData(nowPage, nowSort);
+    // && this.getSubData(nowPage, nowSort);
   }
 
   getRootData = async () => {
@@ -85,7 +86,6 @@ class categoryView extends React.Component {
   };
 
   changePageNum = (num, sort) => {
-    console.log(num, sort);
     this.setState({ nowPage: num, nowSort: sort });
   };
 

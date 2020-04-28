@@ -10,6 +10,7 @@ import EventMain from "./Pages/EventMain/EventMain";
 import Login from "./Pages/Login/Login";
 import ItemCart from "./Pages/ItemCart/ItemCart";
 import CategoryView from "./Pages/CategoryView/CategoryView";
+import NewCategoryView from "./Pages/CategoryView/NewCategoryView";
 import Order from "./Pages/Order/Order";
 import OrderList from "./Pages/OrderList/OrderList";
 import SearchPage from "./Pages/CategoryView/SearchPage.js";
@@ -26,6 +27,7 @@ class Routes extends React.Component {
           <Route exact path="/join" component={Join} />
           <Route exact path="/login" component={Login} />
           <Route path="/categoryview" component={CategoryView} />
+          <Route path="/newproducts" component={NewCategoryView} />
           <Route path="/detail" component={Detail} />
           <Route exact path="/footer" component={Footer} />
           <Route exact path="/itemcart" component={ItemCart} />

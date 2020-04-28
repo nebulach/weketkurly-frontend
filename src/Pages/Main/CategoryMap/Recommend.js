@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainItem from "../MainItem";
 
 const Recommend = ({ title, products }) => {
+  const [offsetX, setOffsetX] = useState(0);
+
   const productsArr =
     products &&
     products.map((param, idx) => {
@@ -31,6 +33,7 @@ const Recommend = ({ title, products }) => {
       >
         <button
           // onClick={this.moveLeft}
+          style={{}}
           className="btn-scroll btn-scroll-left"
         ></button>
         <button
