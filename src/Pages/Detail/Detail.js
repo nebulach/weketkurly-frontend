@@ -47,7 +47,8 @@ export default class Detail extends Component {
       thumb: "",
       productName: "",
       popPrice: 0,
-      nowCart: {}
+      nowCart: {},
+      nowPath: this.props.location.pathname
     };
   }
 
@@ -55,7 +56,10 @@ export default class Detail extends Component {
     window.scroll(0, 0);
     this.getCartData();
     window.addEventListener("scroll", this.onScroll);
+    this.getAPI();
+  };
 
+  getAPI = () => {
     fetch(
       `${API_JONG}/products/related/${
         this.props.location.pathname.split("/")[2]
@@ -76,11 +80,18 @@ export default class Detail extends Component {
             info: res.data
           },
           () => {
-            this.setState({ price: this.state.info.discounted_price });
+            this.setState({
+              price: this.state.info.discounted_price,
+              nowPath: this.props.location.pathname
+            });
           }
         );
       });
   };
+
+  componentDidUpdate(prevProps, prevState) {
+    prevState.nowPath !== this.props.location.pathname && this.getAPI();
+  }
 
   getCartData = async () => {
     const myHeaders = new Headers();
@@ -221,7 +232,6 @@ export default class Detail extends Component {
   };
 
   postCartItem = async (product_num, quantity) => {
-    console.log(product_num, quantity);
     const goCart = { product_num: product_num, quantity: quantity };
     const myHeaders = new Headers();
     myHeaders.append("Authorization", sessionStorage.getItem("wetoken"));
@@ -509,6 +519,7 @@ export default class Detail extends Component {
           onClickBarClose={this.onClickBarClose}
           handleOnClickPlus={this.handleOnClickPlus}
           handleOnClickMinus={this.handleOnClickMinus}
+          onChangeCart={this.onChangeCart}
         />
         <Footer />
       </div>

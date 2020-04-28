@@ -94,10 +94,25 @@ class CategoryTitle extends Component {
 
   render() {
     //맵함수 들어갈 자리
+
     return (
       <div className="sort-title-outer">
         <div className="sort-title-box">
-          <img
+          {this.props.location.pathname.split("/")[1] === "newproducts" ? (
+            <span style={{ fontSize: "14px", fontWeight: "500" }}>신상품</span>
+          ) : (
+            <img
+              className="sort-icon"
+              src={this.props.rootDataAll.icon_active_url}
+              // src={
+              //   this.state.data[this.state.sortOrder]
+              //     ? this.state.data[this.state.sortOrder].pc_icon_url
+              //     : ""
+              // }
+              alt=""
+            ></img>
+          )}
+          {/* <img
             className="sort-icon"
             src={this.props.rootDataAll.icon_active_url}
             // src={
@@ -106,7 +121,7 @@ class CategoryTitle extends Component {
             //     : ""
             // }
             alt=""
-          ></img>
+          ></img> */}
           <div className="sort-title-image">
             {this.props.rootDataAll.main_category}
             {/* {this.state.data[this.state.sortOrder]

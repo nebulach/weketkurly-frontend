@@ -1,10 +1,17 @@
 import React, { Component } from "react";
+import { withRouter } from "react-router-dom";
 
-export default class DetailSlide extends Component {
+class DetailSlide extends Component {
   render() {
-    const { name, price, img } = this.props; //destructuring
+    const { name, price, img, no } = this.props; //destructuring
     return (
-      <li className="each-slide">
+      <li
+        className="each-slide"
+        onClick={
+          () => this.props.history.push(`/detail/${no}`)
+          // console.log("no", no);
+        }
+      >
         <div
           className="relatedImg"
           style={{ backgroundImage: `url(${img})` }}
@@ -17,3 +24,5 @@ export default class DetailSlide extends Component {
     );
   }
 }
+
+export default withRouter(DetailSlide);

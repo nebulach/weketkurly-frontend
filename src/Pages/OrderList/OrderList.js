@@ -72,13 +72,9 @@ export default class OrderList extends Component {
     let sum = 0;
     let resultArr = [];
 
-    // for (let i of arr[0].products) {
-    //   sum += i.discounted_price;
-    // }
-
     for (let i = 0; i < arr.length; i++) {
       for (let j = 0; j < arr[i].products.length; j++) {
-        sum += arr[i].products[j].discounted_price;
+        sum += arr[i].products[j].discounted_price * arr[i].products[j].ea;
       }
       resultArr.push({
         product_name: `${arr[i].products[0].name} 외 ${arr[i].products.length -
@@ -88,6 +84,7 @@ export default class OrderList extends Component {
         price: sum,
         time: arr[i].date
       });
+      sum = 0;
     }
 
     this.setState({ convertedArr: resultArr });

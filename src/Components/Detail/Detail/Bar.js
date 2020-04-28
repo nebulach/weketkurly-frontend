@@ -20,7 +20,8 @@ export default class Bar extends Component {
       onClickBarOpen,
       onClickBarClose,
       handleOnClickPlus,
-      handleOnClickMinus
+      handleOnClickMinus,
+      onChangeCart
     } = this.props;
     return (
       <div className="bar" style={{ display: scroll ? "block" : "none" }}>
@@ -59,6 +60,9 @@ export default class Bar extends Component {
                 togglePopUp={this.togglePopUp}
                 togglePopUpCart={this.togglePopUpCart}
                 save={save}
+                onChangeCart={() =>
+                  onChangeCart(info.detail_image_url, info.name, info.price)
+                }
               />
               {popUp ? (
                 <PopUp

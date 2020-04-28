@@ -37,7 +37,6 @@ class ItemCartChild extends Component {
     });
     // const cart = await fetch("http://localhost:3000/data/cart.json");
     const cartJSON = await cart.json();
-    console.log(cartJSON);
 
     this.setState(
       {
@@ -49,7 +48,6 @@ class ItemCartChild extends Component {
         this.setState({
           itemList: [
             ...this.state.dataProps.map(param => {
-              console.log(param);
               return {
                 id: param["product_num"],
                 name: param["name"],
@@ -101,7 +99,6 @@ class ItemCartChild extends Component {
   deleteItem = async (row, id) => {
     const { itemCount, checkedCount, chkChecked } = this.state;
     const targetIdx = row;
-    console.log(row, id);
 
     const tempArr = [...this.state.itemList]; // itemList 복사
     const tempArrFilter = tempArr.filter((_, idx) => idx !== targetIdx);

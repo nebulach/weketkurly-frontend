@@ -1,7 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import MainItem from "../MainItem";
 
 const Recommend = ({ title, products }) => {
+  const [offsetX, setOffsetX] = useState(0);
+
   const productsArr =
     products &&
     products.map((param, idx) => {
@@ -16,11 +18,12 @@ const Recommend = ({ title, products }) => {
           // thumbnail_image_url={param["thumbnail_image_url"]}
           thumbnail_image_url={param["list_image_url"]}
           sticker_image_url={param["sticker_image_url"]}
-          // style={this.state.moveX}
+          // style={{ marginLeft: `${offsetX}px` }}
+          // style={{ marginLeft: `-50px` }}
+          offsetX={offsetX}
         />
       );
     });
-
   return (
     <>
       <p className="main-font">{title}</p>
@@ -31,10 +34,18 @@ const Recommend = ({ title, products }) => {
       >
         <button
           // onClick={this.moveLeft}
+          style={offsetX === 0 ? { display: "none" } : { display: "block" }}
+          onClick={() => setOffsetX(offsetX + 267)}
           className="btn-scroll btn-scroll-left"
         ></button>
         <button
           // onClick={this.moveRight}
+          style={
+            offsetX === (products.length - 4) * -267
+              ? { display: "none" }
+              : { display: "block" }
+          }
+          onClick={() => setOffsetX(offsetX - 267)}
           className="btn-scroll btn-scroll-right"
         ></button>
       </div>
