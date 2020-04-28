@@ -27,7 +27,7 @@ class Join extends Component {
       day: "",
       email: "",
       cellPhone: "",
-      address: "경기도 화성시 동탄순환대로 20길",
+      address: "경기도 화성시 동탄순환대로 20길 ] 121호",
       sex: "",
       birthYear: "",
       birthMonth: "",

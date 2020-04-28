@@ -36,8 +36,9 @@ export default class ProductInfo extends Component {
           <span className="won">원</span>
           <span
             style={
-              (((original_price - price) / original_price) * 100).toFixed(0) ===
-              0
+              Number(
+                (((original_price - price) / original_price) * 100).toFixed(0)
+              ) === 0
                 ? { display: "none" }
                 : {
                     display: "inline-block",
